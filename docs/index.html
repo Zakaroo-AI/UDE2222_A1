@@ -2,7 +2,6 @@
 <!--
   CareRide - Elderly-Friendly AV Ride Booking Kiosk
   S5 - Group 3 | SIT | Punggol, Singapore
-  Deploy: browseURL("careride.html") or rstudio::viewer("careride.html")
 -->
 <html lang="en">
 <head>
@@ -12,77 +11,55 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-
 :root {
-  --teal:      #0A7A8E;
-  --teal-mid:  #1699B0;
-  --teal-dark: #065E70;
-  --teal-lt:   #E0F5F8;
-  --teal-pale: #F0FAFB;
-  --amber:     #F5A314;
-  --amber-lt:  #FFF4E0;
-  --green:     #2A9D5C;
-  --green-lt:  #E4F7ED;
-  --red:       #C0392B;
-  --red-lt:    #FEF0EE;
-  --bg:        #F2F9FA;
-  --white:     #FFFFFF;
-  --text:      #1A2B3C;
-  --muted:     #5E7A87;
-  --border:    #C8E8EE;
+  --teal:      #0A7A8E; --teal-mid: #1699B0; --teal-dark: #065E70;
+  --teal-lt:   #E0F5F8; --teal-pale: #F0FAFB;
+  --amber:     #F5A314; --amber-lt:  #FFF4E0;
+  --green:     #2A9D5C; --green-lt:  #E4F7ED;
+  --red:       #C0392B; --red-lt:    #FEF0EE;
+  --bg:        #F2F9FA; --white: #FFFFFF;
+  --text:      #1A2B3C; --muted: #5E7A87; --border: #C8E8EE;
 }
-
-html, body { height:100%; font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); }
+html,body { height:100%; font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); }
 body { display:flex; align-items:stretch; justify-content:center; min-height:100vh; }
+.shell { width:100%; max-width:940px; background:var(--white); display:flex; flex-direction:column; min-height:100vh; overflow:hidden; position:relative; box-shadow:0 8px 40px rgba(10,122,142,0.13); }
 
-.shell {
-  width:100%; max-width:940px;
-  background:var(--white);
-  display:flex; flex-direction:column;
-  min-height:100vh; overflow:hidden; position:relative;
-  box-shadow:0 8px 40px rgba(10,122,142,0.13);
-}
-
-/* Accessibility bar */
-.a11y-bar {
+/* Language + A11y bar */
+.top-controls {
   display:flex; align-items:center; justify-content:space-between;
   padding:10px 44px; background:var(--teal-pale);
   border-bottom:1.5px solid var(--border);
-  font-size:15px; font-weight:700; color:var(--muted);
+  flex-wrap:wrap; gap:8px;
 }
-.a11y-bar.wc-on { background:#FFF9EC; border-color:#F5C44E; }
-.a11y-toggle {
-  display:flex; align-items:center; gap:10px;
-  background:none; border:2px solid var(--border);
-  border-radius:100px; padding:8px 18px;
-  font-family:inherit; font-size:15px; font-weight:800;
+.top-controls.wc-on { background:#FFF9EC; border-color:#F5C44E; }
+.lang-btns { display:flex; gap:6px; align-items:center; }
+.lang-btn {
+  padding:6px 14px; border-radius:100px; border:2px solid var(--border);
+  background:var(--white); font-family:inherit; font-size:14px; font-weight:800;
   color:var(--muted); cursor:pointer; transition:all .2s;
+}
+.lang-btn:hover { border-color:var(--teal); color:var(--teal); }
+.lang-btn.on { background:var(--teal); border-color:var(--teal); color:white; }
+.a11y-toggle {
+  display:flex; align-items:center; gap:10px; background:none;
+  border:2px solid var(--border); border-radius:100px; padding:7px 16px;
+  font-family:inherit; font-size:14px; font-weight:800; color:var(--muted); cursor:pointer; transition:all .2s;
 }
 .a11y-toggle:hover { border-color:var(--amber); color:#A86800; }
 .a11y-toggle.on { background:var(--amber); border-color:var(--amber); color:white; }
-.track { width:38px; height:22px; background:var(--border); border-radius:100px; position:relative; transition:.2s; }
+.track { width:34px; height:20px; background:var(--border); border-radius:100px; position:relative; transition:.2s; }
 .track.on { background:var(--amber); }
-.thumb { width:16px; height:16px; background:white; border-radius:50%; position:absolute; top:3px; left:3px; transition:.2s; }
-.track.on .thumb { left:19px; }
+.thumb { width:14px; height:14px; background:white; border-radius:50%; position:absolute; top:3px; left:3px; transition:.2s; }
+.track.on .thumb { left:17px; }
 
 /* Progress bar */
 .topbar { padding:20px 44px 16px; border-bottom:1.5px solid var(--border); background:var(--white); display:none; }
 .topbar.on { display:block; }
 .steps { display:flex; align-items:flex-start; justify-content:center; }
 .si { flex:1; display:flex; flex-direction:column; align-items:center; position:relative; }
-.si:not(:last-child)::after {
-  content:''; position:absolute; top:22px;
-  left:55%; right:-45%; height:3px;
-  background:var(--border); transition:background .4s; z-index:0;
-}
+.si:not(:last-child)::after { content:''; position:absolute; top:22px; left:55%; right:-45%; height:3px; background:var(--border); transition:background .4s; z-index:0; }
 .si.done:not(:last-child)::after { background:var(--teal); }
-.si-dot {
-  width:44px; height:44px; border-radius:50%;
-  border:3px solid var(--border); background:var(--bg);
-  font-size:17px; font-weight:800; color:var(--muted);
-  display:flex; align-items:center; justify-content:center;
-  transition:all .3s; position:relative; z-index:1;
-}
+.si-dot { width:44px; height:44px; border-radius:50%; border:3px solid var(--border); background:var(--bg); font-size:17px; font-weight:800; color:var(--muted); display:flex; align-items:center; justify-content:center; transition:all .3s; position:relative; z-index:1; }
 .si.on .si-dot   { border-color:var(--teal); background:var(--teal); color:#fff; box-shadow:0 0 0 5px var(--teal-lt); }
 .si.done .si-dot { border-color:var(--teal); background:var(--teal); color:#fff; }
 .si-lbl { margin-top:7px; font-size:13px; font-weight:700; color:var(--muted); text-align:center; white-space:nowrap; }
@@ -90,10 +67,8 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
 
 /* Screens */
 .screens { flex:1; position:relative; overflow:hidden; min-height:0; }
-.scr { position:absolute; inset:0; padding:40px 44px; overflow-y:auto; opacity:0; pointer-events:none; }
+.scr { position:absolute; inset:0; padding:38px 44px; overflow-y:auto; opacity:0; pointer-events:none; }
 .scr.on { opacity:1; pointer-events:all; }
-
-/* Slide animations */
 .sil { animation:SIR .35s cubic-bezier(.4,0,.2,1) both; }
 .sir { animation:SIL .35s cubic-bezier(.4,0,.2,1) both; }
 .sol { animation:SOL .35s cubic-bezier(.4,0,.2,1) both; pointer-events:none !important; }
@@ -104,449 +79,257 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
 @keyframes SOR { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(60px)} }
 
 /* Welcome */
-#sw {
-  display:flex; flex-direction:column; align-items:center;
-  justify-content:center; text-align:center;
-  background:linear-gradient(148deg,#DDF3F7 0%,#FAF9F6 100%);
-  padding-top:60px; padding-bottom:60px;
-}
-.logo-box {
-  width:126px; height:126px; border-radius:32px;
-  background:var(--teal); display:flex; align-items:center; justify-content:center;
-  box-shadow:0 12px 44px rgba(10,122,142,.38); margin-bottom:26px;
-  animation:popUp .6s cubic-bezier(.34,1.56,.64,1) both .1s;
-}
-.app-name    { font-size:54px; font-weight:900; color:var(--teal); letter-spacing:-1.5px; line-height:1; margin-bottom:6px; animation:fadeUp .5s ease both .25s; }
-.app-sub     { font-size:16px; font-weight:700; color:var(--amber); letter-spacing:1px; text-transform:uppercase; margin-bottom:10px; animation:fadeUp .5s ease both .3s; }
-.app-tagline { font-size:21px; font-weight:600; color:var(--muted); line-height:1.55; max-width:440px; margin-bottom:32px; animation:fadeUp .5s ease both .35s; }
-.clock-pill  {
-  background:var(--teal-lt); color:var(--teal);
-  font-size:21px; font-weight:800; padding:13px 34px; border-radius:100px;
-  margin-bottom:34px; display:inline-flex; align-items:center; gap:10px;
-  animation:fadeUp .5s ease both .42s;
-}
-.singpass-row { display:flex; gap:14px; align-items:center; margin-bottom:14px; animation:fadeUp .5s ease both .5s; width:100%; max-width:400px; }
-.btn-xl {
-  flex:1; padding:24px; background:var(--teal); color:white; border:none;
-  border-radius:22px; font-family:inherit; font-size:26px; font-weight:900;
-  cursor:pointer; transition:all .2s; box-shadow:0 8px 30px rgba(10,122,142,.38);
-}
-.btn-xl:hover  { background:var(--teal-dark); transform:translateY(-2px); }
+#sw { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; background:linear-gradient(148deg,#DDF3F7 0%,#FAF9F6 100%); padding-top:50px; padding-bottom:50px; }
+.logo-box { width:120px; height:120px; border-radius:30px; background:var(--teal); display:flex; align-items:center; justify-content:center; box-shadow:0 12px 44px rgba(10,122,142,.38); margin-bottom:22px; animation:popUp .6s cubic-bezier(.34,1.56,.64,1) both .1s; }
+.app-name    { font-size:52px; font-weight:900; color:var(--teal); letter-spacing:-1.5px; line-height:1; margin-bottom:5px; animation:fadeUp .5s ease both .25s; }
+.app-sub     { font-size:15px; font-weight:700; color:var(--amber); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; animation:fadeUp .5s ease both .3s; }
+.app-tagline { font-size:20px; font-weight:600; color:var(--muted); line-height:1.55; max-width:420px; margin-bottom:28px; animation:fadeUp .5s ease both .35s; }
+.clock-pill  { background:var(--teal-lt); color:var(--teal); font-size:20px; font-weight:800; padding:12px 30px; border-radius:100px; margin-bottom:28px; display:inline-flex; align-items:center; gap:10px; animation:fadeUp .5s ease both .42s; }
+.singpass-row { display:flex; gap:12px; align-items:center; margin-bottom:12px; animation:fadeUp .5s ease both .5s; width:100%; max-width:400px; }
+.btn-xl { flex:1; padding:22px; background:var(--teal); color:white; border:none; border-radius:20px; font-family:inherit; font-size:24px; font-weight:900; cursor:pointer; transition:all .2s; box-shadow:0 8px 30px rgba(10,122,142,.38); }
+.btn-xl:hover { background:var(--teal-dark); transform:translateY(-2px); }
 .btn-xl:active { transform:scale(.98); }
-.btn-sp {
-  padding:24px 20px; background:var(--white); color:var(--teal);
-  border:2.5px solid var(--teal); border-radius:22px;
-  font-family:inherit; font-size:20px; font-weight:900;
-  cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:8px; white-space:nowrap;
-}
+.btn-sp { padding:22px 18px; background:var(--white); color:var(--teal); border:2.5px solid var(--teal); border-radius:20px; font-family:inherit; font-size:18px; font-weight:900; cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:7px; white-space:nowrap; }
 .btn-sp:hover { background:var(--teal-lt); }
-.btn-ghost {
-  width:100%; max-width:400px; padding:18px; background:transparent;
-  color:var(--muted); border:2.5px solid var(--border); border-radius:20px;
-  font-family:inherit; font-size:19px; font-weight:700; cursor:pointer; transition:all .2s;
-  animation:fadeUp .5s ease both .58s;
-}
+.btn-ghost { width:100%; max-width:400px; padding:16px; background:transparent; color:var(--muted); border:2.5px solid var(--border); border-radius:18px; font-family:inherit; font-size:18px; font-weight:700; cursor:pointer; transition:all .2s; animation:fadeUp .5s ease both .58s; }
 .btn-ghost:hover { border-color:var(--teal); color:var(--teal); background:var(--teal-lt); }
 @keyframes popUp  { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
 @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
 /* Screen headers */
-.hd  { margin-bottom:24px; }
-.h-t { font-size:36px; font-weight:900; color:var(--text); line-height:1.2; margin-bottom:7px; }
-.h-s { font-size:19px; font-weight:600; color:var(--muted); }
+.hd  { margin-bottom:20px; }
+.h-t { font-size:34px; font-weight:900; color:var(--text); line-height:1.2; margin-bottom:7px; }
+.h-s { font-size:18px; font-weight:600; color:var(--muted); }
 
-/* Error hint */
-.err-hint {
-  font-size:18px; font-weight:700; color:var(--red);
-  display:none; align-items:center; gap:10px;
-  padding:12px 16px; background:var(--red-lt);
-  border-radius:13px; border-left:5px solid var(--red); margin-bottom:16px;
-}
+/* Error hints */
+.err-hint { font-size:17px; font-weight:700; color:var(--red); display:none; align-items:center; gap:10px; padding:11px 16px; background:var(--red-lt); border-radius:13px; border-left:5px solid var(--red); margin-bottom:14px; }
 .err-hint.on { display:flex; }
 
+/* Demo banner */
+.demo-banner { display:flex; align-items:center; gap:10px; padding:11px 16px; background:var(--amber-lt); border:2px solid var(--amber); border-radius:13px; margin-bottom:16px; font-size:16px; font-weight:700; color:#A86800; }
+
 /* Location grid */
-.loc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-.loc-card {
-  background:var(--bg); border:2.5px solid var(--border); border-radius:20px;
-  padding:22px 10px 18px; text-align:center; cursor:pointer;
-  transition:all .2s; display:flex; flex-direction:column;
-  align-items:center; gap:8px; user-select:none; position:relative; min-height:110px;
-}
+.loc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:13px; }
+.loc-card { background:var(--bg); border:2.5px solid var(--border); border-radius:18px; padding:20px 10px 16px; text-align:center; cursor:pointer; transition:all .2s; display:flex; flex-direction:column; align-items:center; gap:7px; user-select:none; position:relative; min-height:100px; }
 .loc-card:hover { border-color:var(--teal); background:var(--teal-lt); transform:translateY(-2px); }
 .loc-card.sel   { border-color:var(--teal); background:var(--teal-lt); box-shadow:0 0 0 4px rgba(10,122,142,.15); }
-.loc-card.same-as-pickup {
-  opacity:.4; cursor:not-allowed; pointer-events:none;
-  border-style:dashed;
-}
-.loc-card.same-as-pickup .loc-name::after {
-  content:' (pickup)';
-  font-size:12px; font-weight:700; color:var(--red); display:block; margin-top:2px;
-}
-.loc-emoji { font-size:40px; line-height:1.15; }
-.loc-name  { font-size:17px; font-weight:700; color:var(--text); line-height:1.3; }
+.loc-card.same-as-pickup { opacity:.4; cursor:not-allowed; pointer-events:none; border-style:dashed; }
+.loc-card.same-as-pickup .loc-name::after { content:' (pickup)'; font-size:11px; font-weight:700; color:var(--red); display:block; margin-top:2px; }
+.loc-emoji { font-size:38px; line-height:1.15; }
+.loc-name  { font-size:16px; font-weight:700; color:var(--text); line-height:1.3; }
 .loc-card.sel .loc-name { color:var(--teal-dark); }
-.fav-star {
-  position:absolute; top:8px; right:10px;
-  font-size:18px; cursor:pointer; opacity:.4; transition:.15s;
-  background:none; border:none; padding:2px; color:var(--amber); line-height:1;
-}
+.fav-star { position:absolute; top:7px; right:9px; font-size:16px; cursor:pointer; opacity:.4; transition:.15s; background:none; border:none; padding:2px; color:var(--amber); line-height:1; }
 .fav-star:hover { opacity:1; transform:scale(1.2); }
 .fav-star.on { opacity:1; }
 
 /* Section labels */
-.sec-lbl { font-size:19px; font-weight:800; color:var(--muted); margin:4px 0 12px; }
+.sec-lbl { font-size:18px; font-weight:800; color:var(--muted); margin:4px 0 11px; }
 
 /* Date row */
-.date-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:28px; }
-.d-card {
-  background:var(--bg); border:2.5px solid var(--border); border-radius:20px;
-  padding:20px 10px; text-align:center; cursor:pointer; transition:all .2s; user-select:none;
-}
+.date-row { display:grid; grid-template-columns:repeat(3,1fr); gap:13px; margin-bottom:24px; }
+.d-card { background:var(--bg); border:2.5px solid var(--border); border-radius:18px; padding:18px 10px; text-align:center; cursor:pointer; transition:all .2s; user-select:none; }
 .d-card:hover { border-color:var(--teal); background:var(--teal-lt); }
 .d-card.sel   { border-color:var(--teal); background:var(--teal-lt); }
-.d-num { font-size:22px; font-weight:900; color:var(--text); }
-.d-txt { font-size:15px; font-weight:700; color:var(--muted); margin-top:5px; }
+.d-num { font-size:20px; font-weight:900; color:var(--text); }
+.d-txt { font-size:14px; font-weight:700; color:var(--muted); margin-top:4px; }
 .d-card.sel .d-num, .d-card.sel .d-txt { color:var(--teal); }
 
-/* Slot section */
-.slots-header {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:14px; flex-wrap:wrap; gap:10px;
-}
-.legend { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-.leg {
-  display:flex; align-items:center; gap:5px;
-  font-size:13px; font-weight:700; color:var(--muted);
-}
-.leg-dot { width:11px; height:11px; border-radius:50%; }
+/* Slot grid */
+.slots-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
+.legend { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.leg { display:flex; align-items:center; gap:4px; font-size:12px; font-weight:700; color:var(--muted); }
+.leg-dot { width:10px; height:10px; border-radius:50%; }
 .leg-dot.green { background:var(--green); }
 .leg-dot.amber { background:var(--amber); }
 .leg-dot.gray  { background:#C5D5DC; }
-
-.wc-filter-row { margin-bottom:16px; }
-.wc-filter-btn {
-  padding:10px 20px; border-radius:100px;
-  border:2px solid var(--teal); background:var(--teal-lt);
-  font-family:inherit; font-size:15px; font-weight:800;
-  color:var(--teal); cursor:pointer; transition:all .2s;
-}
+.wc-filter-row { margin-bottom:14px; }
+.wc-filter-btn { padding:9px 18px; border-radius:100px; border:2px solid var(--teal); background:var(--teal-lt); font-family:inherit; font-size:14px; font-weight:800; color:var(--teal); cursor:pointer; transition:all .2s; }
 .wc-filter-btn.active { background:var(--teal); color:white; }
-.wc-filter-btn:hover  { background:var(--teal); color:white; }
-
-.slot-group    { margin-bottom:28px; }
-.slot-group-hd {
-  font-size:14px; font-weight:900; color:var(--muted);
-  text-transform:uppercase; letter-spacing:1px;
-  margin-bottom:12px; padding-bottom:8px;
-  border-bottom:1.5px solid var(--border);
-}
-.slot-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
-
-.slot-card {
-  background:var(--bg); border:2.5px solid var(--border);
-  border-radius:20px; padding:20px; cursor:pointer;
-  transition:all .2s; user-select:none; position:relative;
-}
+.slot-group    { margin-bottom:24px; }
+.slot-group-hd { font-size:13px; font-weight:900; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:11px; padding-bottom:7px; border-bottom:1.5px solid var(--border); }
+.slot-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.slot-card { background:var(--bg); border:2.5px solid var(--border); border-radius:18px; padding:18px; cursor:pointer; transition:all .2s; user-select:none; position:relative; }
 .slot-card:hover:not(.full) { border-color:var(--teal); background:var(--teal-lt); transform:translateY(-2px); }
-.slot-card.sel  {
-  border-color:var(--teal); background:var(--teal-lt);
-  box-shadow:0 0 0 4px rgba(10,122,142,.15);
-}
-.slot-card.full { opacity:.45; cursor:not-allowed; pointer-events:none; }
+.slot-card.sel  { border-color:var(--teal); background:var(--teal-lt); box-shadow:0 0 0 4px rgba(10,122,142,.15); }
+.slot-card.full { opacity:.42; cursor:not-allowed; pointer-events:none; }
 .slot-card.wc-slot { border-left:5px solid var(--teal-mid); }
-
-.slot-time-big  { font-size:28px; font-weight:900; color:var(--text); margin-bottom:6px; }
-.slot-veh       { font-size:15px; font-weight:700; color:var(--muted); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.slot-card.dispatch { border:2.5px solid var(--amber); background:#FFFBF2; }
+.slot-card.dispatch:hover { border-color:#E8960A; background:var(--amber-lt); transform:translateY(-2px); }
+.slot-card.dispatch.sel { border-color:#E8960A; background:var(--amber-lt); box-shadow:0 0 0 4px rgba(245,163,20,.2); }
+.slot-time-big  { font-size:26px; font-weight:900; color:var(--text); margin-bottom:5px; }
+.slot-veh       { font-size:14px; font-weight:700; color:var(--muted); margin-bottom:8px; display:flex; align-items:center; gap:5px; }
 .slot-veh.wc    { color:var(--teal); }
-.slot-veh-id    { font-size:12px; font-weight:600; color:var(--muted); opacity:.7; margin-top:2px; }
-
-.dots-row       { display:flex; align-items:center; gap:4px; margin-bottom:6px; flex-wrap:wrap; }
-.dot            { width:14px; height:14px; border-radius:50%; flex-shrink:0; }
+.slot-veh.disp  { color:#A86800; }
+.slot-veh-id    { font-size:11px; font-weight:600; color:var(--muted); opacity:.7; margin-top:2px; }
+.dots-row       { display:flex; align-items:center; gap:3px; margin-bottom:5px; flex-wrap:wrap; }
+.dot            { width:13px; height:13px; border-radius:50%; flex-shrink:0; }
 .dot.tk         { background:#BDD0D8; }
 .dot.fr         { background:var(--green); }
-.slot-cap       { font-size:14px; font-weight:700; color:var(--muted); margin-bottom:10px; }
-
-.slot-badge     { display:inline-block; padding:5px 14px; border-radius:100px; font-size:13px; font-weight:800; }
+.dot.fresh      { background:var(--amber); }
+.slot-cap       { font-size:13px; font-weight:700; color:var(--muted); margin-bottom:8px; }
+.slot-badge     { display:inline-block; padding:4px 12px; border-radius:100px; font-size:12px; font-weight:800; }
 .b-ok   { background:var(--green-lt); color:var(--green); }
 .b-few  { background:var(--amber-lt); color:#A86800; }
 .b-full { background:#EAEFF2; color:#8FA3AD; }
-
-.no-date-hint {
-  text-align:center; padding:48px 24px;
-  font-size:20px; font-weight:600; color:var(--muted);
-  display:flex; flex-direction:column; align-items:center; gap:12px;
-}
-.no-date-hint .hint-icon { font-size:48px; }
-
-.no-slots-msg {
-  text-align:center; padding:28px 16px;
-  font-size:17px; font-weight:600; color:var(--muted);
-  background:var(--bg); border-radius:16px;
-}
+.b-disp { background:var(--amber-lt); color:#A86800; }
+.dispatch-eta   { font-size:15px; font-weight:800; color:#A86800; margin-top:6px; }
+.no-date-hint { text-align:center; padding:44px 24px; font-size:19px; font-weight:600; color:var(--muted); display:flex; flex-direction:column; align-items:center; gap:12px; }
+.no-date-hint .hint-icon { font-size:44px; }
+.no-slots-msg { text-align:center; padding:24px 16px; font-size:16px; font-weight:600; color:var(--muted); background:var(--bg); border-radius:14px; }
 
 /* Review */
-.rv-box { background:var(--bg); border-radius:26px; padding:6px 24px; margin-bottom:20px; }
-.rv-row { display:flex; align-items:center; gap:18px; padding:18px 0; border-bottom:1.5px solid var(--border); }
+.rv-box { background:var(--bg); border-radius:24px; padding:5px 22px; margin-bottom:18px; }
+.rv-row { display:flex; align-items:center; gap:16px; padding:16px 0; border-bottom:1.5px solid var(--border); }
 .rv-row:last-child { border-bottom:none; }
-.rv-ico {
-  width:60px; height:60px; border-radius:16px;
-  background:var(--teal-lt); display:flex; align-items:center;
-  justify-content:center; font-size:28px; flex-shrink:0;
-}
-.rv-lbl { font-size:14px; font-weight:700; color:var(--muted); margin-bottom:4px; }
-.rv-val { font-size:23px; font-weight:800; color:var(--text); line-height:1.3; }
-.rv-val.sm { font-size:18px; }
-
-.fare-row {
-  display:flex; align-items:center; justify-content:space-between;
-  background:var(--teal-lt); border:2px solid var(--teal);
-  border-radius:18px; padding:18px 24px; margin-bottom:18px;
-}
-.fare-lbl  { font-size:20px; font-weight:700; color:var(--teal-dark); }
-.fare-val  { font-size:34px; font-weight:900; color:var(--teal); }
-.fare-note { font-size:14px; font-weight:600; color:var(--muted); margin-top:2px; }
-.info-bar {
-  background:var(--teal-lt); border-left:5px solid var(--teal);
-  border-radius:0 16px 16px 0; padding:16px 20px;
-  display:flex; align-items:flex-start; gap:12px;
-  font-size:17px; font-weight:600; color:var(--teal-dark); line-height:1.55;
-}
+.rv-ico { width:56px; height:56px; border-radius:15px; background:var(--teal-lt); display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+.rv-lbl { font-size:13px; font-weight:700; color:var(--muted); margin-bottom:3px; }
+.rv-val { font-size:21px; font-weight:800; color:var(--text); line-height:1.3; }
+.fare-row { display:flex; align-items:center; justify-content:space-between; background:var(--teal-lt); border:2px solid var(--teal); border-radius:16px; padding:16px 22px; margin-bottom:16px; }
+.fare-lbl  { font-size:18px; font-weight:700; color:var(--teal-dark); }
+.fare-val  { font-size:32px; font-weight:900; color:var(--teal); }
+.fare-note { font-size:13px; font-weight:600; color:var(--muted); margin-top:2px; }
+.info-bar  { background:var(--teal-lt); border-left:5px solid var(--teal); border-radius:0 14px 14px 0; padding:14px 18px; display:flex; align-items:flex-start; gap:11px; font-size:16px; font-weight:600; color:var(--teal-dark); line-height:1.55; }
 
 /* Confirmation */
-#sc {
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center;
-  background:linear-gradient(148deg,#E4F7ED 0%,#FAF9F6 100%);
-  padding-top:60px; padding-bottom:60px;
+#sc { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; background:linear-gradient(148deg,#E4F7ED 0%,#FAF9F6 100%); padding-top:40px; padding-bottom:40px; }
+.check-ring { width:110px; height:110px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; margin:0 auto 22px; box-shadow:0 12px 40px rgba(42,157,92,.33); animation:popUp .55s cubic-bezier(.34,1.56,.64,1) both; }
+.cfm-t { font-size:42px; font-weight:900; color:var(--green); margin-bottom:7px; }
+.cfm-s { font-size:18px; font-weight:600; color:var(--muted); margin-bottom:24px; max-width:400px; line-height:1.55; }
+.ref-card { background:var(--white); border-radius:18px; padding:18px 44px; margin-bottom:18px; display:inline-block; box-shadow:0 4px 20px rgba(10,122,142,.12); }
+.ref-lbl { font-size:14px; font-weight:700; color:var(--muted); margin-bottom:5px; }
+.ref-val { font-size:34px; font-weight:900; color:var(--teal); letter-spacing:4px; }
+
+/* Live AV Tracker */
+.tracker-wrap { width:100%; max-width:520px; margin-bottom:18px; }
+.tracker-title { font-size:15px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; text-align:center; }
+.tracker-svg-wrap { border-radius:16px; overflow:hidden; background:var(--bg); border:2px solid var(--border); margin-bottom:12px; }
+.tracker-eta-row { display:flex; align-items:center; justify-content:center; gap:12px; background:var(--amber-lt); border:2px solid var(--amber); border-radius:14px; padding:14px 24px; }
+.tracker-eta-lbl { font-size:16px; font-weight:700; color:var(--muted); }
+.tracker-eta-num { font-size:28px; font-weight:900; color:#A86800; min-width:80px; text-align:center; }
+.tracker-bay-lbl { font-size:13px; font-weight:600; color:var(--muted); text-align:center; margin-top:6px; }
+
+/* Car animation */
+#trackerCar { animation:driveToHub 5s cubic-bezier(.4,0,.6,1) forwards; }
+@keyframes driveToHub {
+  0%   { transform:translateX(0px);   }
+  85%  { transform:translateX(258px); }
+  92%  { transform:translateX(252px); }
+  100% { transform:translateX(258px); }
 }
-.check-ring {
-  width:120px; height:120px; border-radius:50%;
-  background:var(--green); display:flex; align-items:center; justify-content:center;
-  margin:0 auto 26px; box-shadow:0 12px 40px rgba(42,157,92,.33);
-  animation:popUp .55s cubic-bezier(.34,1.56,.64,1) both;
-}
-.cfm-t { font-size:46px; font-weight:900; color:var(--green); margin-bottom:8px; }
-.cfm-s { font-size:20px; font-weight:600; color:var(--muted); margin-bottom:34px; max-width:420px; line-height:1.55; }
-.ref-card {
-  background:var(--white); border-radius:20px; padding:22px 48px;
-  margin-bottom:22px; display:inline-block;
-  box-shadow:0 4px 20px rgba(10,122,142,.12);
-}
-.ref-lbl { font-size:15px; font-weight:700; color:var(--muted); margin-bottom:6px; }
-.ref-val { font-size:38px; font-weight:900; color:var(--teal); letter-spacing:4px; }
-.dispatch-card {
-  background:var(--amber-lt); border:3px solid var(--amber);
-  border-radius:20px; padding:20px 32px; margin-bottom:16px;
-  display:flex; align-items:center; gap:16px;
-  max-width:520px; text-align:left;
-}
-.d-lbl { font-size:17px; font-weight:700; color:var(--muted); }
-.d-val { font-size:24px; font-weight:900; color:#A86800; line-height:1.3; }
-.pickup-tip {
-  background:var(--teal-lt); border:2px solid var(--teal);
-  border-radius:16px; padding:14px 24px;
-  font-size:17px; font-weight:600; color:var(--teal-dark);
-  max-width:520px; line-height:1.55; margin-bottom:34px;
-  display:flex; align-items:flex-start; gap:12px;
-}
+.hub-ring { animation:hubPulse 1.4s ease-out infinite; animation-delay:5.2s; opacity:0; transform-box:fill-box; transform-origin:center; }
+@keyframes hubPulse { 0%{opacity:.7;transform:scale(1)} 100%{opacity:0;transform:scale(1.6)} }
+
+.pickup-tip { background:var(--teal-lt); border:2px solid var(--teal); border-radius:14px; padding:13px 22px; font-size:16px; font-weight:600; color:var(--teal-dark); max-width:520px; line-height:1.55; margin-bottom:28px; display:flex; align-items:flex-start; gap:11px; }
 
 /* Footer nav */
-.footer { padding:18px 44px; background:var(--white); border-top:1.5px solid var(--border); display:none; gap:14px; align-items:center; }
+.footer { padding:16px 44px; background:var(--white); border-top:1.5px solid var(--border); display:none; gap:13px; align-items:center; }
 .footer.on { display:flex; }
-.btn-back {
-  padding:18px 30px; background:var(--bg); border:2.5px solid var(--border);
-  border-radius:16px; font-family:inherit; font-size:20px; font-weight:700;
-  color:var(--text); cursor:pointer; transition:all .2s; white-space:nowrap;
-  display:flex; align-items:center; gap:10px;
-}
+.btn-back { padding:16px 28px; background:var(--bg); border:2.5px solid var(--border); border-radius:14px; font-family:inherit; font-size:19px; font-weight:700; color:var(--text); cursor:pointer; transition:all .2s; white-space:nowrap; display:flex; align-items:center; gap:9px; }
 .btn-back:hover { border-color:var(--text); background:var(--white); }
-.btn-next {
-  flex:1; padding:18px 28px; background:var(--teal); color:white; border:none;
-  border-radius:16px; font-family:inherit; font-size:24px; font-weight:900;
-  cursor:pointer; transition:all .2s; display:flex; align-items:center;
-  justify-content:center; gap:12px; box-shadow:0 4px 18px rgba(10,122,142,.28);
-}
-.btn-next:hover  { background:var(--teal-dark); transform:translateY(-1px); }
-.btn-next:active { transform:scale(.99); }
+.btn-next { flex:1; padding:16px 26px; background:var(--teal); color:white; border:none; border-radius:14px; font-family:inherit; font-size:22px; font-weight:900; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 4px 18px rgba(10,122,142,.28); }
+.btn-next:hover { background:var(--teal-dark); transform:translateY(-1px); }
 .btn-next.gs { background:var(--green); box-shadow:0 4px 18px rgba(42,157,92,.3); }
 .btn-next.gs:hover { background:#228A4F; }
 
 /* FAB */
-.fab {
-  position:fixed; bottom:28px; right:28px;
-  width:72px; height:72px; border-radius:50%;
-  background:var(--amber); border:none; color:white;
-  font-family:inherit; font-size:28px; font-weight:900;
-  cursor:pointer; box-shadow:0 8px 28px rgba(245,163,20,.5);
-  transition:all .2s; z-index:999;
-  display:flex; align-items:center; justify-content:center;
-}
+.fab { position:fixed; bottom:26px; right:26px; width:68px; height:68px; border-radius:50%; background:var(--amber); border:none; color:white; font-family:inherit; font-size:26px; font-weight:900; cursor:pointer; box-shadow:0 8px 28px rgba(245,163,20,.5); transition:all .2s; z-index:999; display:flex; align-items:center; justify-content:center; }
 .fab:hover { transform:scale(1.12); }
 
-/* ---- Modals ---- */
-.modal-overlay {
-  position:fixed; inset:0; z-index:1000;
-  background:rgba(10,40,60,0.55);
-  display:flex; align-items:center; justify-content:center;
-  padding:24px;
-  opacity:0; pointer-events:none;
-  transition:opacity .25s;
-}
+/* Modals */
+.modal-overlay { position:fixed; inset:0; z-index:1000; background:rgba(10,40,60,0.58); display:flex; align-items:center; justify-content:center; padding:22px; opacity:0; pointer-events:none; transition:opacity .25s; }
 .modal-overlay.on { opacity:1; pointer-events:all; }
-
-.modal-card {
-  background:var(--white); border-radius:28px;
-  width:100%; max-width:500px; padding:40px 36px 36px;
-  position:relative; box-shadow:0 24px 64px rgba(0,0,0,0.22);
-  animation:modalIn .35s cubic-bezier(.34,1.56,.64,1) both;
-  max-height:90vh; overflow-y:auto;
-}
+.modal-card { background:var(--white); border-radius:26px; width:100%; max-width:500px; padding:38px 34px 34px; position:relative; box-shadow:0 24px 64px rgba(0,0,0,0.22); animation:modalIn .35s cubic-bezier(.34,1.56,.64,1) both; max-height:92vh; overflow-y:auto; }
 @keyframes modalIn { from{transform:scale(.88);opacity:0} to{transform:scale(1);opacity:1} }
-
-.modal-close {
-  position:absolute; top:18px; right:18px;
-  width:48px; height:48px; border-radius:50%;
-  background:var(--bg); border:2px solid var(--border);
-  font-size:20px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:all .2s; color:var(--muted);
-}
+.modal-close { position:absolute; top:16px; right:16px; width:46px; height:46px; border-radius:50%; background:var(--bg); border:2px solid var(--border); font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; color:var(--muted); }
 .modal-close:hover { background:var(--red-lt); border-color:var(--red); color:var(--red); }
 
 /* Help modal */
-.help-icon { font-size:52px; text-align:center; margin-bottom:12px; }
-.modal-title { font-size:32px; font-weight:900; color:var(--text); text-align:center; margin-bottom:6px; }
-.modal-sub   { font-size:18px; font-weight:600; color:var(--muted); text-align:center; margin-bottom:28px; }
-
-.help-phone {
-  display:flex; align-items:center; gap:18px;
-  background:var(--teal-lt); border:2px solid var(--teal);
-  border-radius:20px; padding:20px 24px; margin-bottom:14px;
-}
-.help-phone-lbl  { font-size:14px; font-weight:700; color:var(--muted); margin-bottom:2px; }
-.help-phone-num  { font-size:28px; font-weight:900; color:var(--teal); letter-spacing:.5px; }
-.help-phone-sub  { font-size:14px; font-weight:600; color:var(--muted); margin-top:2px; }
-.help-hours {
-  font-size:16px; font-weight:700; color:var(--muted);
-  text-align:center; margin-bottom:24px;
-  padding:10px; background:var(--bg); border-radius:12px;
-}
-
-.help-steps-lbl { font-size:16px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
-.help-step {
-  display:flex; align-items:center; gap:14px;
-  padding:12px 0; border-bottom:1.5px solid var(--border);
-  font-size:18px; font-weight:700; color:var(--text);
-}
-.help-step:last-of-type { border-bottom:none; margin-bottom:24px; }
-.step-num {
-  width:34px; height:34px; border-radius:50%;
-  background:var(--teal); color:white;
-  font-size:16px; font-weight:900;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
-}
-.modal-btn {
-  width:100%; padding:20px; border:none; border-radius:18px;
-  font-family:inherit; font-size:22px; font-weight:900;
-  cursor:pointer; transition:all .2s;
-}
+.help-icon  { font-size:48px; text-align:center; margin-bottom:10px; }
+.modal-title{ font-size:30px; font-weight:900; color:var(--text); text-align:center; margin-bottom:5px; }
+.modal-sub  { font-size:17px; font-weight:600; color:var(--muted); text-align:center; margin-bottom:24px; }
+.help-phone { display:flex; align-items:center; gap:16px; background:var(--teal-lt); border:2px solid var(--teal); border-radius:18px; padding:18px 22px; margin-bottom:12px; }
+.help-phone-lbl { font-size:13px; font-weight:700; color:var(--muted); margin-bottom:2px; }
+.help-phone-num { font-size:26px; font-weight:900; color:var(--teal); letter-spacing:.5px; }
+.help-phone-sub { font-size:13px; font-weight:600; color:var(--muted); margin-top:2px; }
+.help-hours { font-size:15px; font-weight:700; color:var(--muted); text-align:center; margin-bottom:22px; padding:9px; background:var(--bg); border-radius:11px; }
+.help-steps-lbl { font-size:15px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:11px; }
+.help-step { display:flex; align-items:center; gap:13px; padding:11px 0; border-bottom:1.5px solid var(--border); font-size:17px; font-weight:700; color:var(--text); }
+.help-step:last-of-type { border-bottom:none; margin-bottom:22px; }
+.step-num { width:32px; height:32px; border-radius:50%; background:var(--teal); color:white; font-size:15px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.modal-btn { width:100%; padding:18px; border:none; border-radius:16px; font-family:inherit; font-size:20px; font-weight:900; cursor:pointer; transition:all .2s; }
 .modal-btn.teal  { background:var(--teal); color:white; box-shadow:0 4px 16px rgba(10,122,142,.28); }
 .modal-btn.teal:hover  { background:var(--teal-dark); }
 .modal-btn.green { background:var(--green); color:white; box-shadow:0 4px 16px rgba(42,157,92,.28); }
 .modal-btn.green:hover { background:#228A4F; }
 
 /* SingPass modal */
-.sp-card { padding-top:36px; }
-.sp-header {
-  display:flex; align-items:center; gap:14px;
-  margin-bottom:28px;
-}
-.sp-badge {
-  width:54px; height:54px; border-radius:14px;
-  background:#E2231A; display:flex; align-items:center; justify-content:center;
-  font-size:20px; font-weight:900; color:white; letter-spacing:-1px; flex-shrink:0;
-}
-.sp-brand-name  { font-size:26px; font-weight:900; color:#E2231A; letter-spacing:-0.5px; }
-.sp-brand-sub   { font-size:14px; font-weight:600; color:var(--muted); }
-
-.sp-scanner {
-  width:180px; height:180px; border-radius:20px;
-  border:3px dashed #E2231A;
-  margin:0 auto 20px; position:relative;
-  overflow:hidden; display:flex; align-items:center; justify-content:center;
-  background:#FFF5F5;
-}
-.sp-scan-line {
-  position:absolute; left:0; right:0; height:3px;
-  background:linear-gradient(90deg,transparent,#E2231A 30%,#E2231A 70%,transparent);
-  box-shadow:0 0 8px rgba(226,35,26,.5);
-  animation:scanLine 1.8s ease-in-out infinite;
-}
+.sp-header { display:flex; align-items:center; gap:13px; margin-bottom:26px; }
+.sp-badge  { width:52px; height:52px; border-radius:13px; background:#E2231A; display:flex; align-items:center; justify-content:center; font-size:19px; font-weight:900; color:white; letter-spacing:-1px; flex-shrink:0; }
+.sp-brand-name { font-size:24px; font-weight:900; color:#E2231A; }
+.sp-brand-sub  { font-size:13px; font-weight:600; color:var(--muted); }
+.sp-scanner { width:170px; height:170px; border-radius:18px; border:3px dashed #E2231A; margin:0 auto 18px; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#FFF5F5; }
+.sp-scan-line { position:absolute; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,#E2231A 30%,#E2231A 70%,transparent); box-shadow:0 0 8px rgba(226,35,26,.5); animation:scanLine 1.8s ease-in-out infinite; }
 @keyframes scanLine { 0%{top:0} 50%{top:calc(100% - 3px)} 100%{top:0} }
-.sp-qr-icon { font-size:64px; opacity:.25; }
-
-.sp-scan-label { text-align:center; font-size:17px; font-weight:700; color:var(--muted); margin-bottom:6px; }
-.sp-demo-note  {
-  text-align:center; font-size:13px; font-weight:700;
-  color:var(--amber); background:var(--amber-lt); border-radius:8px;
-  padding:6px 12px; margin-bottom:24px;
-}
-.sp-progress { height:5px; background:var(--bg); border-radius:100px; margin-bottom:24px; overflow:hidden; }
+.sp-qr-icon    { font-size:60px; opacity:.2; }
+.sp-scan-label { text-align:center; font-size:16px; font-weight:700; color:var(--muted); margin-bottom:6px; }
+.sp-demo-note  { text-align:center; font-size:12px; font-weight:700; color:var(--amber); background:var(--amber-lt); border-radius:8px; padding:5px 12px; margin-bottom:20px; }
+.sp-progress   { height:5px; background:var(--bg); border-radius:100px; margin-bottom:20px; overflow:hidden; }
 .sp-progress-bar { height:100%; background:#E2231A; border-radius:100px; width:0; transition:width 2.5s linear; }
+.sp-success    { text-align:center; display:none; }
+.sp-check-circle { width:76px; height:76px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; animation:popUp .45s cubic-bezier(.34,1.56,.64,1) both; }
+.sp-verified-lbl { font-size:13px; font-weight:800; color:var(--green); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px; }
+.sp-user-name  { font-size:28px; font-weight:900; color:var(--text); margin-bottom:4px; }
+.sp-nric       { font-size:17px; font-weight:700; color:var(--muted); margin-bottom:14px; }
+.sp-autofill-note { font-size:14px; font-weight:600; color:var(--teal); background:var(--teal-lt); border-radius:9px; padding:9px 14px; margin-bottom:22px; display:inline-block; }
 
-.sp-success { text-align:center; display:none; }
-.sp-check-circle {
-  width:80px; height:80px; border-radius:50%;
-  background:var(--green); display:flex; align-items:center; justify-content:center;
-  margin:0 auto 16px;
-  animation:popUp .45s cubic-bezier(.34,1.56,.64,1) both;
-}
-.sp-verified-lbl { font-size:14px; font-weight:800; color:var(--green); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
-.sp-user-name   { font-size:30px; font-weight:900; color:var(--text); margin-bottom:4px; }
-.sp-nric        { font-size:18px; font-weight:700; color:var(--muted); margin-bottom:16px; }
-.sp-autofill-note {
-  font-size:15px; font-weight:600; color:var(--teal);
-  background:var(--teal-lt); border-radius:10px; padding:10px 16px; margin-bottom:24px;
-  display:inline-block;
-}
+/* Inactivity modal */
+.inact-icon  { font-size:52px; text-align:center; margin-bottom:12px; animation:pulse 1s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+.inact-countdown { font-size:52px; font-weight:900; color:var(--red); text-align:center; margin:12px 0; }
+.inact-sub { font-size:17px; font-weight:600; color:var(--muted); text-align:center; margin-bottom:6px; }
+.inact-prog { height:6px; background:var(--bg); border-radius:100px; margin-bottom:24px; overflow:hidden; }
+.inact-prog-bar { height:100%; background:var(--red); border-radius:100px; transition:width 1s linear; }
 
 @media (max-width:640px) {
-  .scr { padding:24px; }
-  .footer { padding:14px 20px; }
+  .scr { padding:22px; }
+  .footer { padding:13px 20px; }
   .loc-grid { grid-template-columns:repeat(2,1fr); }
   .date-row { grid-template-columns:repeat(2,1fr); }
   .slot-grid { grid-template-columns:1fr; }
-  .h-t { font-size:28px; }
-  .app-name { font-size:42px; }
-  .a11y-bar { padding:10px 20px; }
-  .topbar { padding:16px 20px 12px; }
-  .slot-time-big { font-size:24px; }
+  .h-t { font-size:26px; }
+  .app-name { font-size:40px; }
+  .top-controls { padding:9px 20px; }
+  .topbar { padding:14px 18px 12px; }
+  .slot-time-big { font-size:22px; }
 }
 </style>
 </head>
 <body>
 <div class="shell">
 
-  <!-- Accessibility Bar -->
-  <div class="a11y-bar" id="a11yBar">
-    <span>Accessibility Mode</span>
+  <!-- Language + Accessibility bar -->
+  <div class="top-controls" id="topCtrl">
+    <div class="lang-btns">
+      <button class="lang-btn on" data-lang="en" onclick="applyLang('en')">EN</button>
+      <button class="lang-btn"    data-lang="zh" onclick="applyLang('zh')">中文</button>
+      <button class="lang-btn"    data-lang="ms" onclick="applyLang('ms')">MS</button>
+      <button class="lang-btn"    data-lang="ta" onclick="applyLang('ta')">தமிழ்</button>
+    </div>
     <button class="a11y-toggle" id="a11yToggle" onclick="toggleWC()">
       <div class="track" id="a11yTrack"><div class="thumb"></div></div>
       <span id="a11yTxt">Wheelchair Mode OFF</span>
     </button>
   </div>
 
-  <!-- Progress Bar -->
+  <!-- Progress bar -->
   <div class="topbar" id="topbar">
     <div class="steps">
-      <div class="si" id="si1"><div class="si-dot">1</div><div class="si-lbl">Pickup</div></div>
-      <div class="si" id="si2"><div class="si-dot">2</div><div class="si-lbl">Destination</div></div>
-      <div class="si" id="si3"><div class="si-dot">3</div><div class="si-lbl">Date and Time</div></div>
+      <div class="si" id="si1"><div class="si-dot">1</div><div class="si-lbl" id="lbl-s1">Pickup</div></div>
+      <div class="si" id="si2"><div class="si-dot">2</div><div class="si-lbl" id="lbl-s2">Destination</div></div>
+      <div class="si" id="si3"><div class="si-dot">3</div><div class="si-lbl" id="lbl-s3">Date &amp; Time</div></div>
       <div class="si" id="si4">
-        <div class="si-dot">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="si-lbl">Review</div>
+        <div class="si-dot"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="si-lbl" id="lbl-s4">Review</div>
       </div>
     </div>
   </div>
@@ -561,12 +344,10 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
           <path d="M15 24L24 12Q26 9 29 9H53Q56 9 58 12L67 24" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
           <rect x="27" y="12" width="11" height="10" rx="3" fill="rgba(10,122,142,0.55)"/>
           <rect x="42" y="12" width="11" height="10" rx="3" fill="rgba(10,122,142,0.55)"/>
-          <rect x="62" y="28" width="10" height="3" rx="1.5" fill="rgba(255,255,255,0.5)"/>
-          <rect x="65.5" y="24.5" width="3" height="10" rx="1.5" fill="rgba(255,255,255,0.5)"/>
-          <circle cx="21" cy="50" r="8"   fill="rgba(0,0,0,0.13)"/>
+          <circle cx="21" cy="50" r="8" fill="rgba(0,0,0,0.13)"/>
           <circle cx="21" cy="50" r="5.5" fill="white"/>
           <circle cx="21" cy="50" r="2.8" fill="#065E70"/>
-          <circle cx="61" cy="50" r="8"   fill="rgba(0,0,0,0.13)"/>
+          <circle cx="61" cy="50" r="8" fill="rgba(0,0,0,0.13)"/>
           <circle cx="61" cy="50" r="5.5" fill="white"/>
           <circle cx="61" cy="50" r="2.8" fill="#065E70"/>
           <ellipse cx="75" cy="34" rx="5" ry="4" fill="#F5A314"/>
@@ -574,68 +355,66 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
         </svg>
       </div>
       <div class="app-name">CareRide</div>
-      <div class="app-sub">Punggol AV Shuttle Service</div>
-      <div class="app-tagline">Book your safe, door-to-door autonomous vehicle ride independently and easily.</div>
+      <div class="app-sub" id="sw-sub">Punggol AV Shuttle Service</div>
+      <div class="app-tagline" id="sw-tagline">Book your safe, door-to-door autonomous vehicle ride independently and easily.</div>
       <div class="clock-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <span id="clockDisp">-- : --</span>
       </div>
       <div class="singpass-row">
-        <button class="btn-xl" onclick="goTo(1)">🚗 &nbsp; Book a Ride</button>
+        <button class="btn-xl" id="btn-book" onclick="goTo(1)">🚗 Book a Ride</button>
         <button class="btn-sp" onclick="singpassScan()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
           SingPass
         </button>
       </div>
-      <button class="btn-ghost" onclick="helpDialog()">❓ &nbsp; I Need Help</button>
+      <button class="btn-ghost" id="btn-help" onclick="helpDialog()">❓ I Need Help</button>
     </div>
 
     <!-- 1: Pickup -->
     <div class="scr" id="s1">
       <div class="hd">
-        <div class="h-t">📍 Where are you now?</div>
-        <div class="h-s">Tap your pickup location. Tap the star to save a favourite.</div>
+        <div class="h-t" id="s1-title">Where are you now?</div>
+        <div class="h-s" id="s1-sub">Tap your pickup location. Tap the star to save a favourite.</div>
       </div>
-      <div class="err-hint" id="errP">⚠️ &nbsp; Please select a pickup location to continue</div>
+      <div class="demo-banner" id="s1-demo">
+        <span style="font-size:20px">🎬</span>
+        <span id="s1-demo-txt">Demo mode: choose any location as your starting point</span>
+      </div>
+      <div class="err-hint" id="errP">⚠️ Please select a pickup location to continue</div>
       <div class="loc-grid" id="gPickup"></div>
     </div>
 
     <!-- 2: Destination -->
     <div class="scr" id="s2">
       <div class="hd">
-        <div class="h-t">🎯 Where would you like to go?</div>
-        <div class="h-s">Tap your destination. Starred favourites appear first.</div>
+        <div class="h-t" id="s2-title">Where would you like to go?</div>
+        <div class="h-s" id="s2-sub">Tap your destination. Starred favourites appear first.</div>
       </div>
-      <div class="err-hint" id="errD">⚠️ &nbsp; Please select a destination to continue</div>
+      <div class="err-hint" id="errD">⚠️ Please select a destination to continue</div>
       <div class="loc-grid" id="gDest"></div>
     </div>
 
     <!-- 3: Date and Time Slots -->
     <div class="scr" id="s3">
       <div class="hd">
-        <div class="h-t">📅 When would you like to travel?</div>
-        <div class="h-s">Choose a date, then tap an available time slot</div>
+        <div class="h-t" id="s3-title">When would you like to travel?</div>
+        <div class="h-s" id="s3-sub">Choose a date, then tap an available time slot</div>
       </div>
-
-      <div class="sec-lbl">Choose a date</div>
+      <div class="sec-lbl" id="s3-date-lbl">Choose a date</div>
       <div class="date-row" id="dateRow"></div>
-
-      <div class="err-hint" id="errSlot">⚠️ &nbsp; Please select a time slot to continue</div>
-
-      <!-- No date chosen yet -->
+      <div class="err-hint" id="errSlot">⚠️ Please select a time slot to continue</div>
       <div class="no-date-hint" id="noDateHint">
         <div class="hint-icon">👆</div>
-        Select a date above to see available time slots
+        <span id="s3-no-date">Select a date above to see available time slots</span>
       </div>
-
-      <!-- Slots section (shown after date is picked) -->
       <div id="slotsSection" style="display:none">
         <div class="slots-header">
-          <div class="sec-lbl" style="margin:0">Available Time Slots</div>
+          <div class="sec-lbl" style="margin:0" id="s3-slots-lbl">Available Time Slots</div>
           <div class="legend">
-            <span class="leg"><span class="leg-dot green"></span>Available</span>
-            <span class="leg"><span class="leg-dot amber"></span>Few seats</span>
-            <span class="leg"><span class="leg-dot gray"></span>Full</span>
+            <span class="leg"><span class="leg-dot green"></span><span id="leg-avail">Available</span></span>
+            <span class="leg"><span class="leg-dot amber"></span><span id="leg-few">Few seats</span></span>
+            <span class="leg"><span class="leg-dot gray"></span><span id="leg-full">Full</span></span>
           </div>
         </div>
         <div class="wc-filter-row" id="wcFilterRow" style="display:none">
@@ -650,93 +429,116 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
     <!-- 4: Review -->
     <div class="scr" id="s4">
       <div class="hd">
-        <div class="h-t">✅ Review Your Ride</div>
-        <div class="h-s">Check all details before confirming</div>
+        <div class="h-t" id="s4-title">Review Your Ride</div>
+        <div class="h-s" id="s4-sub">Check all details before confirming</div>
       </div>
       <div class="fare-row">
         <div>
-          <div class="fare-lbl">💳 &nbsp; Estimated Fare</div>
-          <div class="fare-note">PayWave, EZ-Link, or SingPass Pay accepted</div>
+          <div class="fare-lbl" id="rv-fare-lbl">💳 Estimated Fare</div>
+          <div class="fare-note" id="rv-fare-note">PayWave, EZ-Link, or SingPass Pay accepted</div>
         </div>
         <div class="fare-val">S$4.00</div>
       </div>
       <div class="rv-box">
-        <div class="rv-row">
-          <div class="rv-ico">📍</div>
-          <div><div class="rv-lbl">Pickup Location</div><div class="rv-val" id="rvP"></div></div>
-        </div>
-        <div class="rv-row">
-          <div class="rv-ico">🎯</div>
-          <div><div class="rv-lbl">Destination</div><div class="rv-val" id="rvD"></div></div>
-        </div>
-        <div class="rv-row">
-          <div class="rv-ico">📅</div>
-          <div><div class="rv-lbl">Travel Date</div><div class="rv-val" id="rvDate"></div></div>
-        </div>
-        <div class="rv-row">
-          <div class="rv-ico">🕐</div>
-          <div><div class="rv-lbl">Pickup Time</div><div class="rv-val" id="rvTime"></div></div>
-        </div>
-        <div class="rv-row">
-          <div class="rv-ico">🚗</div>
-          <div>
-            <div class="rv-lbl">Vehicle Type</div>
-            <div class="rv-val" id="rvVeh"></div>
-            <div style="font-size:14px;font-weight:600;color:var(--muted);margin-top:3px" id="rvVehId"></div>
-          </div>
-        </div>
-        <div class="rv-row">
-          <div class="rv-ico">👥</div>
-          <div><div class="rv-lbl">Seats Remaining After Booking</div><div class="rv-val" id="rvSeats"></div></div>
-        </div>
-        <div class="rv-row">
-          <div class="rv-ico">⏱️</div>
-          <div><div class="rv-lbl">Estimated Travel Time</div><div class="rv-val" id="rvETA"></div></div>
-        </div>
+        <div class="rv-row"><div class="rv-ico">📍</div><div><div class="rv-lbl" id="rv-lbl-p">Pickup Location</div><div class="rv-val" id="rvP"></div></div></div>
+        <div class="rv-row"><div class="rv-ico">🎯</div><div><div class="rv-lbl" id="rv-lbl-d">Destination</div><div class="rv-val" id="rvD"></div></div></div>
+        <div class="rv-row"><div class="rv-ico">📅</div><div><div class="rv-lbl" id="rv-lbl-date">Travel Date</div><div class="rv-val" id="rvDate"></div></div></div>
+        <div class="rv-row"><div class="rv-ico">🕐</div><div><div class="rv-lbl" id="rv-lbl-time">Pickup Time</div><div class="rv-val" id="rvTime"></div></div></div>
+        <div class="rv-row"><div class="rv-ico">🚗</div><div><div class="rv-lbl" id="rv-lbl-veh">Vehicle Type</div><div class="rv-val" id="rvVeh"></div><div style="font-size:13px;font-weight:600;color:var(--muted);margin-top:2px" id="rvVehId"></div></div></div>
+        <div class="rv-row"><div class="rv-ico">👥</div><div><div class="rv-lbl" id="rv-lbl-seats">Seats Remaining After Booking</div><div class="rv-val" id="rvSeats"></div></div></div>
+        <div class="rv-row"><div class="rv-ico">⏱️</div><div><div class="rv-lbl" id="rv-lbl-eta">Estimated Travel Time</div><div class="rv-val" id="rvETA"></div></div></div>
       </div>
-      <div class="info-bar">
-        <span style="font-size:28px;flex-shrink:0">ℹ️</span>
-        <span>Your CareRide AV will wait at the pickup hub for up to <strong>10 minutes</strong>. Listen for your name announcement and look for the <strong>teal CareRide sign</strong> on the windscreen.</span>
-      </div>
+      <div class="info-bar"><span style="font-size:26px;flex-shrink:0">ℹ️</span><span id="rv-info-txt">Your CareRide AV will wait at the pickup hub for up to 10 minutes. Listen for your name announcement and look for the teal CareRide sign on the windscreen.</span></div>
     </div>
 
     <!-- 5: Confirmation -->
     <div class="scr" id="sc">
       <div class="check-ring">
-        <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-          <path d="M13 30L25 43L47 17" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><path d="M12 28L23 40L44 16" stroke="white" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="cfm-t">Ride Confirmed! 🎉</div>
-      <div class="cfm-s">Your CareRide AV is on its way. Sit back and get ready.</div>
+      <div class="cfm-t" id="cfm-title">Ride Confirmed! 🎉</div>
+      <div class="cfm-s" id="cfm-sub">Your CareRide AV is on its way. Sit back and get ready.</div>
       <div class="ref-card">
-        <div class="ref-lbl">Booking Reference Number</div>
+        <div class="ref-lbl" id="cfm-ref-lbl">Booking Reference Number</div>
         <div class="ref-val" id="refNum">CR0000</div>
       </div>
-      <div class="dispatch-card">
-        <span style="font-size:42px">🚗</span>
-        <div>
-          <div class="d-lbl">AV dispatched, arriving in</div>
-          <div class="d-val">~3 minutes</div>
-          <div class="d-lbl" style="margin-top:4px" id="cfmArrival"></div>
+
+      <!-- Live AV Tracker -->
+      <div class="tracker-wrap">
+        <div class="tracker-title" id="tracker-title">Live AV Tracking</div>
+        <div class="tracker-svg-wrap">
+          <svg width="100%" viewBox="0 0 420 140" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background -->
+            <rect width="420" height="140" fill="#EAF7F9"/>
+            <!-- Sky -->
+            <rect width="420" height="80" fill="#E0F4F8"/>
+            <!-- Road -->
+            <rect x="0" y="82" width="420" height="40" fill="#D0E4EC"/>
+            <rect x="0" y="82" width="420" height="3" fill="#BDD4DE"/>
+            <!-- Lane dashes -->
+            <line x1="0" y1="102" x2="420" y2="102" stroke="white" stroke-width="2" stroke-dasharray="18,13" opacity="0.55"/>
+            <!-- Trees left -->
+            <ellipse cx="88"  cy="78" rx="13" ry="12" fill="#A8D090"/>
+            <rect x="86"  y="78" width="4" height="10" fill="#7A5C1E"/>
+            <ellipse cx="118" cy="75" rx="10" ry="9"  fill="#BCE0A0"/>
+            <rect x="116" y="75" width="3" height="8"  fill="#7A5C1E"/>
+            <!-- Trees right -->
+            <ellipse cx="298" cy="78" rx="13" ry="12" fill="#A8D090"/>
+            <rect x="296" y="78" width="4" height="10" fill="#7A5C1E"/>
+            <ellipse cx="330" cy="75" rx="10" ry="9"  fill="#BCE0A0"/>
+            <rect x="328" y="75" width="3" height="8"  fill="#7A5C1E"/>
+            <!-- Bay Hub (left) -->
+            <rect x="6" y="58" width="58" height="32" rx="7" fill="#065E70"/>
+            <text x="35" y="71" text-anchor="middle" fill="white" font-size="8.5" font-weight="900" font-family="Nunito,sans-serif">AV BAY</text>
+            <text x="35" y="83" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="7" font-family="Nunito,sans-serif">Dispatch</text>
+            <!-- Pickup Hub (right) -->
+            <rect x="356" y="58" width="58" height="32" rx="7" fill="#2A9D5C"/>
+            <text x="385" y="71" text-anchor="middle" fill="white" font-size="8.5" font-weight="900" font-family="Nunito,sans-serif">PICK UP</text>
+            <text x="385" y="83" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="7" font-family="Nunito,sans-serif">Hub</text>
+            <!-- Pulse ring on pickup hub -->
+            <rect x="356" y="58" width="58" height="32" rx="7" fill="none" stroke="#2A9D5C" stroke-width="3" class="hub-ring"/>
+            <!-- Animated AV -->
+            <g id="trackerCar">
+              <!-- Car body -->
+              <rect x="0" y="87" width="36" height="16" rx="5" fill="#1699B0"/>
+              <!-- Roof -->
+              <rect x="5" y="81" width="22" height="11" rx="4" fill="#0A7A8E"/>
+              <!-- Windows -->
+              <rect x="7"  y="83" width="8" height="6" rx="2" fill="rgba(200,238,248,0.85)"/>
+              <rect x="17" y="83" width="8" height="6" rx="2" fill="rgba(200,238,248,0.85)"/>
+              <!-- Wheels -->
+              <circle cx="8"  cy="105" r="5" fill="#1A2B3C"/>
+              <circle cx="8"  cy="105" r="2.5" fill="#555"/>
+              <circle cx="28" cy="105" r="5" fill="#1A2B3C"/>
+              <circle cx="28" cy="105" r="2.5" fill="#555"/>
+              <!-- Headlight -->
+              <rect x="34" y="91" width="4" height="5" rx="1.5" fill="#F5C842"/>
+            </g>
+          </svg>
         </div>
+        <div class="tracker-eta-row">
+          <span style="font-size:22px">🚗</span>
+          <div>
+            <div class="tracker-eta-lbl" id="eta-lbl">AV arriving in</div>
+            <div class="tracker-eta-num" id="etaNum">3:00</div>
+          </div>
+        </div>
+        <div class="tracker-bay-lbl" id="tracker-bay-lbl">Dispatched from Punggol AV Bay</div>
       </div>
-      <div class="pickup-tip">
-        <span style="font-size:26px;flex-shrink:0">📣</span>
-        <span>The AV will <strong>announce your name</strong> on arrival. A ramp will deploy automatically. Hold the grab bars when boarding.</span>
-      </div>
-      <button class="btn-xl" onclick="resetAll()" style="max-width:400px;font-size:22px;">🔄 &nbsp; Book Another Ride</button>
+
+      <div class="pickup-tip"><span style="font-size:24px;flex-shrink:0">📣</span><span id="cfm-tip">The AV will announce your name on arrival. A ramp will deploy automatically. Hold the grab bars when boarding.</span></div>
+      <button class="btn-xl" onclick="resetAll()" style="max-width:380px;font-size:20px;" id="btn-again">🔄 Book Another Ride</button>
     </div>
 
   </div>
 
   <!-- Footer Nav -->
   <div class="footer" id="footer">
-    <button class="btn-back" id="btnBack" onclick="goBack()">← Back</button>
-    <button class="btn-next" id="btnNext" onclick="goNext()">Next →</button>
+    <button class="btn-back" id="btnBack" onclick="goBack()"><span id="btn-back-txt">← Back</span></button>
+    <button class="btn-next" id="btnNext" onclick="goNext()"><span id="btn-next-txt">Next →</span></button>
   </div>
 
-</div>
+</div><!-- /.shell -->
 
 <button class="fab" onclick="helpDialog()">?</button>
 
@@ -745,481 +547,798 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
   <div class="modal-card">
     <button class="modal-close" onclick="closeModal('helpModal')">✕</button>
     <div class="help-icon">🆘</div>
-    <div class="modal-title">Need Help?</div>
-    <div class="modal-sub">Our staff are here for you</div>
-
+    <div class="modal-title" id="help-title">Need Help?</div>
+    <div class="modal-sub"   id="help-sub">Our staff are here for you</div>
     <div class="help-phone">
-      <span style="font-size:40px">📞</span>
+      <span style="font-size:38px">📞</span>
       <div>
-        <div class="help-phone-lbl">Call our support hotline</div>
+        <div class="help-phone-lbl" id="help-call-lbl">Call our support hotline</div>
         <div class="help-phone-num">1800-CARERIDE</div>
         <div class="help-phone-sub">1800-227-3743 &nbsp;•&nbsp; Free call</div>
       </div>
     </div>
-    <div class="help-hours">📅 &nbsp; Open daily, 7:00 AM to 10:00 PM</div>
-
-    <div class="help-steps-lbl">How to use this kiosk</div>
-    <div class="help-step"><span class="step-num">1</span>Tap where you are now (Pickup)</div>
-    <div class="help-step"><span class="step-num">2</span>Tap where you want to go</div>
-    <div class="help-step"><span class="step-num">3</span>Choose a date and time slot</div>
-    <div class="help-step"><span class="step-num">4</span>Review your details and confirm</div>
-
-    <button class="modal-btn teal" onclick="closeModal('helpModal')">Got it, thank you!</button>
+    <div class="help-hours" id="help-hours">Open daily, 7:00 AM to 10:00 PM</div>
+    <div class="help-steps-lbl" id="help-steps-lbl">How to use this kiosk</div>
+    <div class="help-step"><span class="step-num">1</span><span id="h-step1">Tap where you are now (Pickup)</span></div>
+    <div class="help-step"><span class="step-num">2</span><span id="h-step2">Tap where you want to go</span></div>
+    <div class="help-step"><span class="step-num">3</span><span id="h-step3">Choose a date and time slot</span></div>
+    <div class="help-step"><span class="step-num">4</span><span id="h-step4">Review your details and confirm</span></div>
+    <button class="modal-btn teal" id="help-close-btn" onclick="closeModal('helpModal')">Got it, thank you!</button>
   </div>
 </div>
 
 <!-- SingPass Modal -->
 <div class="modal-overlay" id="spModal">
-  <div class="modal-card sp-card">
+  <div class="modal-card">
     <button class="modal-close" onclick="closeSP()">✕</button>
-
     <div class="sp-header">
       <div class="sp-badge">SP</div>
       <div>
         <div class="sp-brand-name">SingPass</div>
-        <div class="sp-brand-sub">Identity verification</div>
+        <div class="sp-brand-sub" id="sp-sub">Identity verification</div>
       </div>
     </div>
-
     <div id="spScanning">
       <div class="sp-scanner">
         <div class="sp-scan-line"></div>
         <div class="sp-qr-icon">⬛</div>
       </div>
-      <div class="sp-scan-label">Hold your IC barcode or SingPass QR code up to the scanner</div>
-      <div class="sp-demo-note">Demo mode — simulating scan automatically</div>
+      <div class="sp-scan-label" id="sp-scan-lbl">Hold your IC barcode or SingPass QR code up to the scanner</div>
+      <div class="sp-demo-note" id="sp-demo-note">Demo mode — simulating scan automatically</div>
       <div class="sp-progress"><div class="sp-progress-bar" id="spBar"></div></div>
     </div>
-
     <div class="sp-success" id="spSuccess">
       <div class="sp-check-circle">
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <path d="M8 20L17 29L32 12" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg width="38" height="38" viewBox="0 0 38 38" fill="none"><path d="M7 19L16 28L31 11" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="sp-verified-lbl">Identity Verified</div>
-      <div class="sp-user-name" id="spName">Mr Tan Ah Kow</div>
-      <div class="sp-nric" id="spNric">S••••123A</div>
-      <div class="sp-autofill-note">🏠 &nbsp; Home address filled in automatically</div>
-      <button class="modal-btn green" onclick="spProceed()">Continue to Book →</button>
+      <div class="sp-verified-lbl" id="sp-verified">Identity Verified</div>
+      <div class="sp-user-name">Mr Tan Ah Kow</div>
+      <div class="sp-nric">S••••123A</div>
+      <div class="sp-autofill-note" id="sp-autofill">🏠 Home address filled in automatically</div>
+      <button class="modal-btn green" id="sp-proceed-btn" onclick="spProceed()">Continue to Book →</button>
     </div>
   </div>
 </div>
 
-<script>
-/* ---- Locations ---- */
-const LOCS = [
-  { e:'🏠', n:'My Home'           },
-  { e:'🏥', n:'Polyclinic'        },
-  { e:'🏣', n:'Community Centre'  },
-  { e:'🛒', n:'Waterway Point'    },
-  { e:'🍜', n:'Hawker Centre'     },
-  { e:'🏥', n:'Hospital'          },
-  { e:'🌿', n:'Punggol Park'      },
-  { e:'📚', n:'Library'           },
-  { e:'🚉', n:'Bus Interchange'   },
-];
+<!-- Inactivity Modal -->
+<div class="modal-overlay" id="inactModal">
+  <div class="modal-card" style="text-align:center;max-width:400px">
+    <div class="inact-icon">⏰</div>
+    <div class="modal-title" id="inact-title">Still there?</div>
+    <div class="inact-sub" id="inact-sub">Tap anywhere to continue your booking</div>
+    <div class="inact-countdown" id="inactNum">10</div>
+    <div class="inact-prog"><div class="inact-prog-bar" id="inactBar" style="width:100%"></div></div>
+    <button class="modal-btn teal" id="inact-btn" onclick="stayActive()">Continue Booking</button>
+  </div>
+</div>
 
-const SCREENS = ['sw','s1','s2','s3','s4','sc'];
+<script>
+/* ============================================================
+   TRANSLATIONS
+   ============================================================ */
+const LANGS = {
+  en: {
+    swTagline:'Book your safe, door-to-door autonomous vehicle ride independently and easily.',
+    btnBook:'🚗 Book a Ride', btnHelp:'❓ I Need Help',
+    lbl1:'Pickup', lbl2:'Destination', lbl3:'Date & Time', lbl4:'Review',
+    s1Title:'Where are you now?',
+    s1Sub:'Tap your pickup location. Tap the star to save a favourite.',
+    s1Demo:'Demo mode: choose any location as your starting point',
+    s2Title:'Where would you like to go?',
+    s2Sub:'Tap your destination. Starred favourites appear first.',
+    s3Title:'When would you like to travel?',
+    s3Sub:'Choose a date, then tap an available time slot',
+    s3DateLbl:'Choose a date', s3SlotsLbl:'Available Time Slots',
+    s3NoDate:'Select a date above to see available time slots',
+    legAvail:'Available', legFew:'Few seats', legFull:'Full',
+    s4Title:'Review Your Ride', s4Sub:'Check all details before confirming',
+    rvFareLbl:'💳 Estimated Fare',
+    rvFareNote:'PayWave, EZ-Link, or SingPass Pay accepted',
+    rvLblP:'Pickup Location', rvLblD:'Destination', rvLblDate:'Travel Date',
+    rvLblTime:'Pickup Time', rvLblVeh:'Vehicle Type',
+    rvLblSeats:'Seats Remaining After Booking', rvLblETA:'Estimated Travel Time',
+    rvInfo:'Your CareRide AV will wait at the pickup hub for up to 10 minutes. Listen for your name announcement and look for the teal CareRide sign on the windscreen.',
+    cfmTitle:'Ride Confirmed! 🎉',
+    cfmSub:'Your CareRide AV is on its way. Sit back and get ready.',
+    cfmRefLbl:'Booking Reference Number',
+    trackerTitle:'Live AV Tracking', etaLbl:'AV arriving in',
+    trackerBay:'Dispatched from Punggol AV Bay',
+    cfmTip:'The AV will announce your name on arrival. A ramp will deploy automatically. Hold the grab bars when boarding.',
+    btnAgain:'🔄 Book Another Ride',
+    btnBack:'← Back', btnNext:'Next →', btnConfirm:'✅ Confirm Booking',
+    stdAV:'Standard AV', wcAV:'Wheelchair Accessible AV',
+    dispatchTitle:'On-Demand Dispatch',
+    dispatchFrom:'Fresh AV from Bay',
+    dispatchEtaLbl:'Arriving in approx.',
+    morning:'Morning (7 AM to 12 PM)', afternoon:'Afternoon (12 PM to 5 PM)', evening:'Evening (5 PM to 9 PM)',
+    errPickup:'⚠️ Please select a pickup location to continue',
+    errDest:'⚠️ Please select a destination to continue',
+    errSame:'⚠️ Destination must be different from your pickup location',
+    errSlot:'⚠️ Please select a time slot to continue',
+    wcOff:'Wheelchair Mode OFF', wcOn:'Wheelchair Mode ON',
+    helpTitle:'Need Help?', helpSub:'Our staff are here for you',
+    helpCallLbl:'Call our support hotline',
+    helpHours:'Open daily, 7:00 AM to 10:00 PM',
+    helpStepsLbl:'How to use this kiosk',
+    hStep1:'Tap where you are now (Pickup)',
+    hStep2:'Tap where you want to go',
+    hStep3:'Choose a date and time slot',
+    hStep4:'Review your details and confirm',
+    helpCloseBtn:'Got it, thank you!',
+    spSub:'Identity verification',
+    spScanLbl:'Hold your IC barcode or SingPass QR code up to the scanner',
+    spDemoNote:'Demo mode — simulating scan automatically',
+    spVerified:'Identity Verified', spAutofill:'🏠 Home address filled in automatically',
+    spProceedBtn:'Continue to Book →',
+    inactTitle:'Still there?', inactSub:'Tap anywhere to continue your booking',
+    inactBtn:'Continue Booking',
+    today:'Today', tomorrow:'Tomorrow',
+    days:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    locs:['My Home','Polyclinic','Community Centre','Waterway Point','Hawker Centre','Hospital','Punggol Park','Library','Bus Interchange'],
+  },
+  zh: {
+    swTagline:'安全、便捷地预约自动驾驶接送服务，轻松独立出行。',
+    btnBook:'🚗 预约乘车', btnHelp:'❓ 需要帮助',
+    lbl1:'上车地点', lbl2:'目的地', lbl3:'日期与时间', lbl4:'确认',
+    s1Title:'您现在在哪里？',
+    s1Sub:'点击选择您的上车地点。点击星号保存常用地点。',
+    s1Demo:'演示模式：您可以选择任意起始地点',
+    s2Title:'您想去哪里？',
+    s2Sub:'点击选择目的地。已收藏的地点优先显示。',
+    s3Title:'您想什么时候出行？',
+    s3Sub:'选择日期，然后点击可用时间段',
+    s3DateLbl:'选择日期', s3SlotsLbl:'可用时间段',
+    s3NoDate:'请先选择日期，以查看可用时间段',
+    legAvail:'有空位', legFew:'剩余少量', legFull:'已满',
+    s4Title:'确认您的行程', s4Sub:'确认前请检查所有信息',
+    rvFareLbl:'💳 预计费用',
+    rvFareNote:'接受 PayWave、EZ-Link 或 SingPass Pay',
+    rvLblP:'上车地点', rvLblD:'目的地', rvLblDate:'出行日期',
+    rvLblTime:'上车时间', rvLblVeh:'车辆类型',
+    rvLblSeats:'预约后剩余座位', rvLblETA:'预计行程时间',
+    rvInfo:'您的CareRide自动驾驶车将在上车点等候最多10分钟。请留意车辆广播您的姓名，并寻找前窗的青色CareRide标志。',
+    cfmTitle:'预约成功！🎉',
+    cfmSub:'您的CareRide自动驾驶车正在赶来，请耐心等候。',
+    cfmRefLbl:'预约参考号',
+    trackerTitle:'实时车辆追踪', etaLbl:'车辆预计到达',
+    trackerBay:'从榜鹅AV车站调派',
+    cfmTip:'车辆到达时将广播您的姓名，坡道自动展开，上车时请抓住扶手。',
+    btnAgain:'🔄 再次预约',
+    btnBack:'← 返回', btnNext:'下一步 →', btnConfirm:'✅ 确认预约',
+    stdAV:'标准自动驾驶车', wcAV:'无障碍自动驾驶车',
+    dispatchTitle:'即时调派', dispatchFrom:'从车站调派',
+    dispatchEtaLbl:'预计到达时间',
+    morning:'上午 (7时至12时)', afternoon:'下午 (12时至17时)', evening:'傍晚 (17时至21时)',
+    errPickup:'⚠️ 请选择上车地点', errDest:'⚠️ 请选择目的地',
+    errSame:'⚠️ 目的地不能与上车地点相同',
+    errSlot:'⚠️ 请选择时间段',
+    wcOff:'无障碍模式 关', wcOn:'无障碍模式 开',
+    helpTitle:'需要帮助？', helpSub:'我们的工作人员随时为您服务',
+    helpCallLbl:'拨打服务热线',
+    helpHours:'每日开放，7:00 AM 至 10:00 PM',
+    helpStepsLbl:'如何使用本终端',
+    hStep1:'点击您当前所在地点（上车地点）',
+    hStep2:'点击您的目的地',
+    hStep3:'选择日期和时间段',
+    hStep4:'确认您的行程信息',
+    helpCloseBtn:'明白，谢谢！',
+    spSub:'身份验证', spScanLbl:'请将您的身份证条码或SingPass二维码对准扫描仪',
+    spDemoNote:'演示模式 — 自动模拟扫描',
+    spVerified:'身份验证成功', spAutofill:'🏠 住址已自动填入',
+    spProceedBtn:'继续预约 →',
+    inactTitle:'您还在吗？', inactSub:'点击任意处继续预约',
+    inactBtn:'继续预约',
+    today:'今天', tomorrow:'明天',
+    days:['周日','周一','周二','周三','周四','周五','周六'],
+    months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+    locs:['我家','综合诊疗所','社区俱乐部','水滨广场','小贩中心','医院','榜鹅公园','图书馆','巴士转换站'],
+  },
+  ms: {
+    swTagline:'Tempah perjalanan kenderaan autonomi anda dengan selamat dan mudah.',
+    btnBook:'🚗 Tempah Perjalanan', btnHelp:'❓ Perlukan Bantuan',
+    lbl1:'Pengambilan', lbl2:'Destinasi', lbl3:'Tarikh & Masa', lbl4:'Semak',
+    s1Title:'Di mana anda sekarang?',
+    s1Sub:'Ketik lokasi pengambilan anda. Ketik bintang untuk simpan kegemaran.',
+    s1Demo:'Mod Demo: pilih mana-mana lokasi sebagai titik permulaan',
+    s2Title:'Ke mana anda ingin pergi?',
+    s2Sub:'Ketik destinasi anda. Kegemaran dipaparkan dahulu.',
+    s3Title:'Bilakah anda ingin bermusafir?',
+    s3Sub:'Pilih tarikh, kemudian ketik slot masa yang tersedia',
+    s3DateLbl:'Pilih tarikh', s3SlotsLbl:'Slot Masa Tersedia',
+    s3NoDate:'Pilih tarikh di atas untuk melihat slot masa',
+    legAvail:'Tersedia', legFew:'Sedikit tempat', legFull:'Penuh',
+    s4Title:'Semak Perjalanan Anda', s4Sub:'Semak semua maklumat sebelum mengesahkan',
+    rvFareLbl:'💳 Tambang Anggaran',
+    rvFareNote:'PayWave, EZ-Link atau SingPass Pay diterima',
+    rvLblP:'Lokasi Pengambilan', rvLblD:'Destinasi', rvLblDate:'Tarikh Perjalanan',
+    rvLblTime:'Masa Pengambilan', rvLblVeh:'Jenis Kenderaan',
+    rvLblSeats:'Tempat Tinggal Selepas Tempahan', rvLblETA:'Anggaran Masa Perjalanan',
+    rvInfo:'Kenderaan autonomi CareRide anda akan menunggu sehingga 10 minit. Dengar pengumuman nama anda dan cari tanda CareRide berwarna teal.',
+    cfmTitle:'Perjalanan Disahkan! 🎉',
+    cfmSub:'Kenderaan autonomi CareRide anda sedang dalam perjalanan.',
+    cfmRefLbl:'Nombor Rujukan Tempahan',
+    trackerTitle:'Penjejakan AV Langsung', etaLbl:'AV tiba dalam',
+    trackerBay:'Dihantar dari Bay AV Punggol',
+    cfmTip:'Kenderaan akan mengumumkan nama anda. Landasan turun secara automatik. Pegang bar pemegang semasa menaiki.',
+    btnAgain:'🔄 Tempah Lagi',
+    btnBack:'← Kembali', btnNext:'Seterusnya →', btnConfirm:'✅ Sahkan Tempahan',
+    stdAV:'Kenderaan Autonomi Standard', wcAV:'Kenderaan Mesra OKU',
+    dispatchTitle:'Penghantaran Atas Permintaan', dispatchFrom:'AV Segar dari Bay',
+    dispatchEtaLbl:'Anggaran masa tiba',
+    morning:'Pagi (7 PG - 12 TH)', afternoon:'Tengah Hari (12 TH - 5 PTG)', evening:'Petang (5 PTG - 9 MLM)',
+    errPickup:'⚠️ Sila pilih lokasi pengambilan', errDest:'⚠️ Sila pilih destinasi',
+    errSame:'⚠️ Destinasi mesti berbeza daripada lokasi pengambilan',
+    errSlot:'⚠️ Sila pilih slot masa',
+    wcOff:'Mod OKU TIDAK AKTIF', wcOn:'Mod OKU AKTIF',
+    helpTitle:'Perlukan Bantuan?', helpSub:'Kakitangan kami sedia membantu',
+    helpCallLbl:'Hubungi talian sokongan kami',
+    helpHours:'Buka setiap hari, 7:00 PG hingga 10:00 MLM',
+    helpStepsLbl:'Cara menggunakan kiosk ini',
+    hStep1:'Ketik lokasi anda sekarang (Pengambilan)',
+    hStep2:'Ketik destinasi anda',
+    hStep3:'Pilih tarikh dan slot masa',
+    hStep4:'Semak maklumat dan sahkan',
+    helpCloseBtn:'Faham, terima kasih!',
+    spSub:'Pengesahan identiti', spScanLbl:'Tunjukkan barcode IC atau kod QR SingPass anda ke pengimbas',
+    spDemoNote:'Mod demo — mensimulasikan imbasan secara automatik',
+    spVerified:'Identiti Disahkan', spAutofill:'🏠 Alamat rumah diisi secara automatik',
+    spProceedBtn:'Teruskan Tempahan →',
+    inactTitle:'Masih di sana?', inactSub:'Ketik di mana-mana untuk teruskan tempahan',
+    inactBtn:'Teruskan Tempahan',
+    today:'Hari Ini', tomorrow:'Esok',
+    days:['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'],
+    months:['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'],
+    locs:['Rumah Saya','Poliklinik','Pusat Komuniti','Waterway Point','Pusat Penjaja','Hospital','Taman Punggol','Perpustakaan','Terminal Bas'],
+  },
+  ta: {
+    swTagline:'பாதுகாப்பான, வீட்டிற்கு வீடு AV சவாரியை எளிதாக முன்பதிவு செய்யுங்கள்.',
+    btnBook:'🚗 சவாரி முன்பதிவு', btnHelp:'❓ உதவி தேவை',
+    lbl1:'ஏறும் இடம்', lbl2:'சேரும் இடம்', lbl3:'தேதி & நேரம்', lbl4:'மதிப்பாய்வு',
+    s1Title:'நீங்கள் இப்போது எங்கு இருக்கிறீர்கள்?',
+    s1Sub:'ஏறும் இடத்தை தேர்வு செய்யுங்கள். நட்சத்திரத்தை அழுத்தி சேமியுங்கள்.',
+    s1Demo:'டெமோ பயன்முறை: தொடக்க இடத்தை தேர்வு செய்யுங்கள்',
+    s2Title:'நீங்கள் எங்கு செல்ல விரும்புகிறீர்கள்?',
+    s2Sub:'சேரும் இடத்தை தேர்வு செய்யுங்கள்.',
+    s3Title:'எப்போது பயணிக்க விரும்புகிறீர்கள்?',
+    s3Sub:'தேதி தேர்வு செய்து, நேர ஸ்லாட்டை அழுத்துங்கள்',
+    s3DateLbl:'தேதி தேர்வு', s3SlotsLbl:'கிடைக்கும் நேர ஸ்லாட்கள்',
+    s3NoDate:'நேர ஸ்லாட்களைப் பார்க்க மேலே தேதி தேர்வு செய்யுங்கள்',
+    legAvail:'இடம் உள்ளது', legFew:'சிறிய இடம்', legFull:'நிரம்பியது',
+    s4Title:'உங்கள் சவாரியை மதிப்பாய்வு செய்யுங்கள்',
+    s4Sub:'உறுதிப்படுத்துவதற்கு முன் அனைத்தையும் சரிபாருங்கள்',
+    rvFareLbl:'💳 மதிப்பிடப்பட்ட கட்டணம்',
+    rvFareNote:'PayWave, EZ-Link அல்லது SingPass Pay ஏற்கப்படும்',
+    rvLblP:'ஏறும் இடம்', rvLblD:'சேரும் இடம்', rvLblDate:'பயண தேதி',
+    rvLblTime:'ஏறும் நேரம்', rvLblVeh:'வாகன வகை',
+    rvLblSeats:'முன்பதிவுக்கு பிறகு எஞ்சிய இடங்கள்', rvLblETA:'மதிப்பிடப்பட்ட பயண நேரம்',
+    rvInfo:'உங்கள் CareRide AV ஏறும் இடத்தில் 10 நிமிடங்கள் காத்திருக்கும். உங்கள் பெயர் அறிவிக்கப்படும்.',
+    cfmTitle:'சவாரி உறுதிசெய்யப்பட்டது! 🎉',
+    cfmSub:'உங்கள் CareRide AV வருகிறது. தயாராக இருங்கள்.',
+    cfmRefLbl:'முன்பதிவு எண்',
+    trackerTitle:'நேரடி AV கண்காணிப்பு', etaLbl:'AV வருகை நேரம்',
+    trackerBay:'புங்கோல் AV நிலையத்திலிருந்து அனுப்பப்பட்டது',
+    cfmTip:'வாகனம் வரும்போது உங்கள் பெயரை அறிவிக்கும். ரேம்ப் தானாக இறங்கும். ஏறும்போது கைப்பிடியை பிடியுங்கள்.',
+    btnAgain:'🔄 மீண்டும் முன்பதிவு செய்',
+    btnBack:'← திரும்பு', btnNext:'அடுத்து →', btnConfirm:'✅ முன்பதிவை உறுதிசெய்',
+    stdAV:'நிலையான AV', wcAV:'சக்கர நாற்காலி AV',
+    dispatchTitle:'உடனடி அனுப்புகை', dispatchFrom:'நிலையத்திலிருந்து புதிய AV',
+    dispatchEtaLbl:'வருகை நேரம்',
+    morning:'காலை (7 AM - 12 PM)', afternoon:'மதியம் (12 PM - 5 PM)', evening:'மாலை (5 PM - 9 PM)',
+    errPickup:'⚠️ ஏறும் இடத்தை தேர்வு செய்யுங்கள்',
+    errDest:'⚠️ சேரும் இடத்தை தேர்வு செய்யுங்கள்',
+    errSame:'⚠️ சேரும் இடம் ஏறும் இடத்திலிருந்து வேறாக இருக்க வேண்டும்',
+    errSlot:'⚠️ நேர ஸ்லாட்டை தேர்வு செய்யுங்கள்',
+    wcOff:'அணுகல் பயன்முறை இயக்கமற்றது', wcOn:'அணுகல் பயன்முறை இயக்கம்',
+    helpTitle:'உதவி தேவையா?', helpSub:'எங்கள் ஊழியர்கள் உதவ தயாராக உள்ளனர்',
+    helpCallLbl:'எங்கள் உதவி எண்ணை அழையுங்கள்',
+    helpHours:'தினமும் திறந்திருக்கும், 7:00 AM - 10:00 PM',
+    helpStepsLbl:'இந்த கியாஸ்கை எவ்வாறு பயன்படுத்துவது',
+    hStep1:'நீங்கள் இருக்கும் இடத்தை அழுத்துங்கள்',
+    hStep2:'சேரும் இடத்தை அழுத்துங்கள்',
+    hStep3:'தேதி மற்றும் நேர ஸ்லாட்டை தேர்வு செய்யுங்கள்',
+    hStep4:'விவரங்களை சரிபார்த்து உறுதிசெய்யுங்கள்',
+    helpCloseBtn:'நன்றி, புரிந்தது!',
+    spSub:'அடையாள சரிபார்ப்பு', spScanLbl:'உங்கள் IC பார்கோட் அல்லது SingPass QR குறியீட்டை ஸ்கேனரில் காட்டுங்கள்',
+    spDemoNote:'டெமோ பயன்முறை — தானாக ஸ்கேன் செய்கிறது',
+    spVerified:'அடையாளம் சரிபார்க்கப்பட்டது', spAutofill:'🏠 வீட்டு முகவரி தானாக நிரப்பப்பட்டது',
+    spProceedBtn:'முன்பதிவு செய்ய தொடரவும் →',
+    inactTitle:'நீங்கள் இன்னும் இருக்கிறீர்களா?', inactSub:'தொடர எங்கும் அழுத்துங்கள்',
+    inactBtn:'முன்பதிவை தொடரவும்',
+    today:'இன்று', tomorrow:'நாளை',
+    days:['ஞாயிறு','திங்கள்','செவ்வாய்','புதன்','வியாழன்','வெள்ளி','சனி'],
+    months:['ஜன','பிப்','மார்','ஏப்','மே','ஜூன்','ஜூலை','ஆக','செப்','அக்','நவ','டிச'],
+    locs:['என் வீடு','பாலிகிளினிக்','சமூக மையம்','வாட்டர்வே பாயிண்ட்','உணவு மையம்','மருத்துவமனை','புங்கோல் பூங்கா','நூலகம்','பேருந்து நிலையம்'],
+  }
+};
+
+const LOC_EMOJIS = ['🏠','🏥','🏣','🛒','🍜','🏥','🌿','📚','🚉'];
+const BAY_NAMES  = ['Bay A','Bay B','Bay C'];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const ST = {
+  step:0, lang:'en',
+  pickup:null, dest:null,
+  date:null, dateLbl:null, dateSeed:0,
+  selectedSlot:null, wc:false, wcFilter:false,
+};
 
 let favs = [];
-try { favs = JSON.parse(localStorage.getItem('crFavs') || '[]'); } catch(e) {}
-
-/* ---- State ---- */
-const ST = {
-  step:0, pickup:null, dest:null,
-  date:null, dateLbl:null, dateSeed:0,
-  selectedSlot:null,
-  wc:false, wcFilter:false,
-};
+try { favs = JSON.parse(localStorage.getItem('crFavs')||'[]'); } catch(e){}
 
 const p2 = n => String(n).padStart(2,'0');
 const $  = id => document.getElementById(id);
+const T  = () => LANGS[ST.lang];
 
-/* ---- Clock ---- */
+/* ============================================================
+   CLOCK
+   ============================================================ */
 function tick() {
   const n=new Date(), h=n.getHours()%12||12, m=n.getMinutes(), ap=n.getHours()>=12?'PM':'AM';
   $('clockDisp').textContent = `${p2(h)} : ${p2(m)} ${ap}`;
 }
 tick(); setInterval(tick,10000);
 
-/* ---- Wheelchair mode ---- */
+/* ============================================================
+   LANGUAGE
+   ============================================================ */
+function applyLang(code) {
+  ST.lang = code;
+  const L = LANGS[code];
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('on', b.dataset.lang===code));
+  // Welcome
+  $('sw-tagline').textContent    = L.swTagline;
+  $('btn-book').textContent      = L.btnBook;
+  $('btn-help').textContent      = L.btnHelp;
+  // Steps
+  $('lbl-s1').textContent = L.lbl1; $('lbl-s2').textContent = L.lbl2;
+  $('lbl-s3').textContent = L.lbl3; $('lbl-s4').textContent = L.lbl4;
+  // Screen 1
+  $('s1-title').textContent  = L.s1Title;
+  $('s1-sub').textContent    = L.s1Sub;
+  $('s1-demo-txt').textContent = L.s1Demo;
+  $('errP').textContent      = L.errPickup;
+  // Screen 2
+  $('s2-title').textContent  = L.s2Title;
+  $('s2-sub').textContent    = L.s2Sub;
+  // Screen 3
+  $('s3-title').textContent    = L.s3Title;
+  $('s3-sub').textContent      = L.s3Sub;
+  $('s3-date-lbl').textContent = L.s3DateLbl;
+  $('s3-slots-lbl').textContent= L.s3SlotsLbl;
+  $('s3-no-date').textContent  = L.s3NoDate;
+  $('leg-avail').textContent   = L.legAvail;
+  $('leg-few').textContent     = L.legFew;
+  $('leg-full').textContent    = L.legFull;
+  $('errSlot').textContent     = L.errSlot;
+  // Screen 4
+  $('s4-title').textContent    = L.s4Title;
+  $('s4-sub').textContent      = L.s4Sub;
+  $('rv-fare-lbl').textContent = L.rvFareLbl;
+  $('rv-fare-note').textContent= L.rvFareNote;
+  $('rv-lbl-p').textContent    = L.rvLblP;
+  $('rv-lbl-d').textContent    = L.rvLblD;
+  $('rv-lbl-date').textContent = L.rvLblDate;
+  $('rv-lbl-time').textContent = L.rvLblTime;
+  $('rv-lbl-veh').textContent  = L.rvLblVeh;
+  $('rv-lbl-seats').textContent= L.rvLblSeats;
+  $('rv-lbl-eta').textContent  = L.rvLblETA;
+  $('rv-info-txt').textContent = L.rvInfo;
+  // Screen 5
+  $('cfm-title').textContent   = L.cfmTitle;
+  $('cfm-sub').textContent     = L.cfmSub;
+  $('cfm-ref-lbl').textContent = L.cfmRefLbl;
+  $('tracker-title').textContent = L.trackerTitle;
+  $('eta-lbl').textContent     = L.etaLbl;
+  $('tracker-bay-lbl').textContent = L.trackerBay;
+  $('cfm-tip').textContent     = L.cfmTip;
+  $('btn-again').textContent   = L.btnAgain;
+  // Footer
+  $('btn-back-txt').textContent = L.btnBack;
+  const step = ST.step;
+  $('btn-next-txt').textContent = step===4 ? L.btnConfirm : L.btnNext;
+  // a11y
+  $('a11yTxt').textContent = ST.wc ? L.wcOn : L.wcOff;
+  // Modals
+  $('help-title').textContent    = L.helpTitle;
+  $('help-sub').textContent      = L.helpSub;
+  $('help-call-lbl').textContent = L.helpCallLbl;
+  $('help-hours').textContent    = L.helpHours;
+  $('help-steps-lbl').textContent= L.helpStepsLbl;
+  $('h-step1').textContent = L.hStep1; $('h-step2').textContent = L.hStep2;
+  $('h-step3').textContent = L.hStep3; $('h-step4').textContent = L.hStep4;
+  $('help-close-btn').textContent = L.helpCloseBtn;
+  $('sp-sub').textContent       = L.spSub;
+  $('sp-scan-lbl').textContent  = L.spScanLbl;
+  $('sp-demo-note').textContent = L.spDemoNote;
+  $('sp-verified').textContent  = L.spVerified;
+  $('sp-autofill').textContent  = L.spAutofill;
+  $('sp-proceed-btn').textContent = L.spProceedBtn;
+  $('inact-title').textContent  = L.inactTitle;
+  $('inact-sub').textContent    = L.inactSub;
+  $('inact-btn').textContent    = L.inactBtn;
+  // Rebuild dynamic content
+  if (ST.step===1) buildGrid('gPickup','pickup','errP');
+  if (ST.step===2) buildGrid('gDest','dest','errD', ST.pickup);
+  if (ST.step===3) { buildDates(); if (ST.date) renderSlots(); }
+  if (ST.step===4) populateReview();
+}
+
+/* ============================================================
+   WHEELCHAIR MODE
+   ============================================================ */
 function toggleWC() {
   ST.wc = !ST.wc;
   $('a11yTrack').classList.toggle('on', ST.wc);
-  $('a11yTxt').textContent = ST.wc ? 'Wheelchair Mode ON' : 'Wheelchair Mode OFF';
+  $('a11yTxt').textContent = ST.wc ? T().wcOn : T().wcOff;
   $('a11yToggle').classList.toggle('on', ST.wc);
-  $('a11yBar').classList.toggle('wc-on', ST.wc);
-  if (ST.step === 3 && ST.date) {
+  $('topCtrl').classList.toggle('wc-on', ST.wc);
+  if (ST.step===3 && ST.date) {
     $('wcFilterRow').style.display = ST.wc ? 'block' : 'none';
     renderSlots();
   }
 }
-
 function toggleWCFilter() {
   ST.wcFilter = !ST.wcFilter;
   $('wcFilterBtn').classList.toggle('active', ST.wcFilter);
-  $('wcFilterBtn').textContent = ST.wcFilter
-    ? '♿ Showing wheelchair accessible slots only — tap to show all'
-    : '♿ Show wheelchair accessible slots only';
   renderSlots();
 }
 
-/* ---- Slot generation (seeded so same date = same availability) ---- */
-function sRand(s) {
-  const x = Math.sin(s + 1) * 10000;
-  return x - Math.floor(x);
-}
+/* ============================================================
+   INACTIVITY TIMER
+   ============================================================ */
+let inactTimer=null, inactInterval=null, inactCount=10;
 
-function getSlots(seed) {
-  const out = [];
-  let idx = 0;
-  for (let h = 7; h <= 21; h++) {
-    for (let m = 0; m < 60; m += 15) {
-      if (h === 21 && m > 0) break;
-      const r1 = sRand(seed * 1000 + idx * 17);
-      const r2 = sRand(seed * 1000 + idx * 23 + 5);
-      const r3 = sRand(seed * 1000 + idx * 31 + 11);
-
-      const isWC    = r1 < 0.42;
-      const maxPax  = isWC ? 4 : 5;
-      const vehId   = 'CR-' + Math.floor(r3 * 900 + 100);
-
-      /* Rush hours = 8-10am, 1-3pm, 5-7pm are busier */
-      const rush    = (h>=8&&h<=10)||(h>=13&&h<=15)||(h>=17&&h<=19);
-      let left;
-      if (rush) {
-        left = r2 < 0.35 ? 0 : Math.ceil(r2 * 2);
-      } else {
-        left = Math.round(r2 * maxPax);
-      }
-      left = Math.max(0, Math.min(left, maxPax));
-
-      out.push({ h, m, isWC, left, maxPax, vehId });
-      idx++;
-    }
-  }
-  return out;
-}
-
-/* ---- Format helpers ---- */
-function fmtTime(h, m) {
-  const ap  = h >= 12 ? 'PM' : 'AM';
-  const h12 = h % 12 || 12;
-  return `${p2(h12)}:${p2(m)} ${ap}`;
-}
-
-function dotHtml(left, maxPax) {
-  const taken = maxPax - left;
-  let html = '';
-  for (let i = 0; i < maxPax; i++) {
-    html += `<span class="dot ${i < taken ? 'tk' : 'fr'}"></span>`;
-  }
-  return html;
-}
-
-/* ---- Render slot grid ---- */
-function renderSlots() {
-  const all    = getSlots(ST.dateSeed);
-  const list   = ST.wcFilter ? all.filter(s => s.isWC) : all;
-  const wrap   = $('slotsWrap');
-  wrap.innerHTML = '';
-
-  const groups = [
-    { label:'Morning (7 AM to 12 PM)',    slots: list.filter(s => s.h < 12) },
-    { label:'Afternoon (12 PM to 5 PM)',  slots: list.filter(s => s.h >= 12 && s.h < 17) },
-    { label:'Evening (5 PM to 9 PM)',     slots: list.filter(s => s.h >= 17) },
-  ];
-
-  groups.forEach(grp => {
-    if (grp.slots.length === 0) return;
-
-    const gEl = document.createElement('div');
-    gEl.className = 'slot-group';
-
-    const hd = document.createElement('div');
-    hd.className = 'slot-group-hd';
-    hd.textContent = grp.label;
-    gEl.appendChild(hd);
-
-    const grid = document.createElement('div');
-    grid.className = 'slot-grid';
-
-    grp.slots.forEach(slot => {
-      const isFull = slot.left === 0;
-      const isFew  = slot.left > 0 && slot.left <= 2;
-      const isSel  = ST.selectedSlot
-        && ST.selectedSlot.h === slot.h
-        && ST.selectedSlot.m === slot.m;
-
-      let cls = 'slot-card';
-      if (isFull) cls += ' full';
-      if (isSel)  cls += ' sel';
-      if (slot.isWC) cls += ' wc-slot';
-
-      let badgeCls  = 'b-ok';
-      let badgeTxt  = `${slot.left} seat${slot.left !== 1 ? 's' : ''} left`;
-      if (isFull)      { badgeCls = 'b-full'; badgeTxt = 'Full'; }
-      else if (isFew)  { badgeCls = 'b-few'; }
-
-      const card = document.createElement('div');
-      card.className = cls;
-      card.innerHTML = `
-        <div class="slot-time-big">${fmtTime(slot.h, slot.m)}</div>
-        <div class="slot-veh${slot.isWC ? ' wc' : ''}">
-          ${slot.isWC ? '♿' : '🚗'}
-          ${slot.isWC ? 'Wheelchair Accessible AV' : 'Standard AV'}
-        </div>
-        <div class="dots-row">${dotHtml(slot.left, slot.maxPax)}</div>
-        <div class="slot-cap">${slot.left} of ${slot.maxPax} seats available</div>
-        <div class="slot-badge ${badgeCls}">${badgeTxt}</div>
-        <div class="slot-veh-id">${slot.vehId}</div>
-      `;
-
-      if (!isFull) {
-        card.addEventListener('click', () => {
-          ST.selectedSlot = slot;
-          $('errSlot').classList.remove('on');
-          renderSlots();
-        });
-      }
-
-      grid.appendChild(card);
-    });
-
-    gEl.appendChild(grid);
-    wrap.appendChild(gEl);
-  });
-
-  if (wrap.children.length === 0) {
-    wrap.innerHTML = '<div class="no-slots-msg">No slots match this filter. Try turning off the wheelchair filter to see all slots.</div>';
+function resetInactivityTimer() {
+  clearTimeout(inactTimer);
+  clearInterval(inactInterval);
+  closeModal('inactModal');
+  if (ST.step >= 1 && ST.step <= 4) {
+    inactTimer = setTimeout(showInactWarning, 60000);
   }
 }
-
-/* ---- Date grid ---- */
-function buildDates() {
-  const g = $('dateRow'); g.innerHTML = '';
-  const t = new Date();
-  const MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const DN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  for (let i = 0; i < 3; i++) {
-    const d = new Date(t); d.setDate(t.getDate() + i);
-    const lbl  = i===0 ? 'Today' : i===1 ? 'Tomorrow' : DN[d.getDay()];
-    const dstr = `${d.getDate()} ${MN[d.getMonth()]}`;
-    const seed = d.getDate() * 31 + d.getMonth() * 7;
-    const card = document.createElement('div');
-    card.className = 'd-card' + (ST.date === dstr ? ' sel' : '');
-    card.innerHTML = `<div class="d-num">${dstr}</div><div class="d-txt">${lbl}</div>`;
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.d-card').forEach(c => c.classList.remove('sel'));
-      card.classList.add('sel');
-      ST.date = dstr; ST.dateLbl = lbl; ST.dateSeed = seed;
-      ST.selectedSlot = null;
-      $('noDateHint').style.display    = 'none';
-      $('slotsSection').style.display  = 'block';
-      $('wcFilterRow').style.display   = ST.wc ? 'block' : 'none';
-      renderSlots();
-    });
-    g.appendChild(card);
-  }
+function showInactWarning() {
+  inactCount = 10;
+  $('inactNum').textContent   = inactCount;
+  $('inactBar').style.width   = '100%';
+  openModal('inactModal');
+  inactInterval = setInterval(() => {
+    inactCount--;
+    $('inactNum').textContent = inactCount;
+    $('inactBar').style.width = (inactCount/10*100)+'%';
+    if (inactCount <= 0) { clearInterval(inactInterval); closeModal('inactModal'); resetAll(); }
+  }, 1000);
 }
+function stayActive() {
+  clearInterval(inactInterval);
+  closeModal('inactModal');
+  resetInactivityTimer();
+}
+document.addEventListener('click',    resetInactivityTimer);
+document.addEventListener('touchstart', resetInactivityTimer);
 
-/* ---- Location grid ---- */
+/* ============================================================
+   LOCATION GRID
+   ============================================================ */
 function buildGrid(gridId, stateKey, errId, disabledName) {
-  const g = $(gridId); g.innerHTML = '';
-  const sorted = [...LOCS].sort((a,b) =>
-    (favs.includes(b.n)?1:0) - (favs.includes(a.n)?1:0)
-  );
-  sorted.forEach(loc => {
-    const isSame = disabledName && loc.n === disabledName;
+  const g=$(gridId); g.innerHTML='';
+  const locs = T().locs;
+  const idxArr = [...Array(locs.length).keys()];
+  idxArr.sort((a,b) => (favs.includes(locs[b])?1:0)-(favs.includes(locs[a])?1:0));
+  idxArr.forEach(i => {
+    const name = locs[i], emoji = LOC_EMOJIS[i];
+    const isSame = disabledName && (name === disabledName || LOC_EMOJIS[i] === LOC_EMOJIS[LANGS['en'].locs.indexOf(disabledName)]);
+    const enName = LANGS['en'].locs[i];
+    const isSameEn = disabledName && enName === ST.pickup;
     const el = document.createElement('div');
-    el.className = 'loc-card'
-      + (ST[stateKey] === loc.n ? ' sel' : '')
-      + (isSame ? ' same-as-pickup' : '');
-    const isFav = favs.includes(loc.n);
-    el.innerHTML = `
-      <button class="fav-star${isFav?' on':''}" onclick="toggleFav(event,'${loc.n}',this)">⭐</button>
-      <div class="loc-emoji">${loc.e}</div>
-      <div class="loc-name">${loc.n}</div>
-    `;
+    el.className = 'loc-card' + (ST[stateKey] && LANGS['en'].locs[i] === ST[stateKey] ? ' sel' : '') + (isSameEn ? ' same-as-pickup' : '');
+    const isFav = favs.includes(enName);
+    el.innerHTML = `<button class="fav-star${isFav?' on':''}" onclick="toggleFav(event,'${enName}',this)">⭐</button><div class="loc-emoji">${emoji}</div><div class="loc-name">${name}</div>`;
     el.addEventListener('click', e => {
       if (e.target.closest('.fav-star')) return;
-      g.querySelectorAll('.loc-card').forEach(c => c.classList.remove('sel'));
+      g.querySelectorAll('.loc-card').forEach(c=>c.classList.remove('sel'));
       el.classList.add('sel');
-      ST[stateKey] = loc.n;
+      ST[stateKey] = enName;
       $(errId).classList.remove('on');
     });
     g.appendChild(el);
   });
 }
 
-function toggleFav(e, name, btn) {
+function toggleFav(e, enName, btn) {
   e.stopPropagation();
-  const idx = favs.indexOf(name);
-  if (idx > -1) { favs.splice(idx,1); btn.classList.remove('on'); }
-  else           { favs.push(name);   btn.classList.add('on'); }
-  try { localStorage.setItem('crFavs', JSON.stringify(favs)); } catch(x) {}
+  const idx=favs.indexOf(enName);
+  if(idx>-1){favs.splice(idx,1);btn.classList.remove('on');}
+  else{favs.push(enName);btn.classList.add('on');}
+  try{localStorage.setItem('crFavs',JSON.stringify(favs));}catch(x){}
 }
 
-/* ---- Review ---- */
-function populateReview() {
-  $('rvP').textContent    = ST.pickup || 'Not selected';
-  $('rvD').textContent    = ST.dest   || 'Not selected';
-  $('rvDate').textContent = ST.date   ? `${ST.dateLbl}, ${ST.date}` : 'Not selected';
-  if (ST.selectedSlot) {
-    const s = ST.selectedSlot;
-    $('rvTime').textContent  = fmtTime(s.h, s.m);
-    $('rvVeh').textContent   = s.isWC ? 'Wheelchair Accessible AV' : 'Standard AV';
-    $('rvVehId').textContent = `Vehicle ID: ${s.vehId}`;
-    $('rvSeats').textContent = `${s.left - 1} of ${s.maxPax} seats after your booking`;
-  }
-  const etaOpts = [8,10,12,14,15];
-  $('rvETA').textContent = `~${etaOpts[Math.floor(Math.random()*etaOpts.length)]} minutes`;
-}
-
-/* ---- Confirmation ---- */
-function populateConfirm() {
-  $('refNum').textContent = 'CR' + Math.floor(10000 + Math.random() * 90000);
-  if (ST.selectedSlot) {
-    $('cfmArrival').textContent =
-      `${ST.dateLbl}, ${ST.date} at ${fmtTime(ST.selectedSlot.h, ST.selectedSlot.m)}`;
-  }
-  const ring = document.querySelector('.check-ring');
-  ring.style.animation='none'; ring.offsetHeight; ring.style.animation='';
-}
-
-/* ---- Navigation ---- */
-let busy = false;
-
-function goTo(step) {
-  if (busy) return; busy = true;
-  const dir    = step > ST.step ? 1 : -1;
-  const fromEl = $(SCREENS[ST.step]);
-  const toEl   = $(SCREENS[step]);
-
-  fromEl.classList.remove('on');
-  fromEl.classList.add(dir > 0 ? 'sol' : 'sor');
-  toEl.classList.add('on', dir > 0 ? 'sil' : 'sir');
-
-  setTimeout(() => {
-    fromEl.classList.remove('sol','sor');
-    toEl.classList.remove('sil','sir');
-    busy = false;
-  }, 370);
-
-  ST.step = step;
-
-  const showUI = step >= 1 && step <= 4;
-  $('topbar').classList.toggle('on', showUI);
-  $('footer').classList.toggle('on', showUI);
-
-  for (let i = 1; i <= 4; i++) {
-    const el = $('si' + i);
-    el.classList.remove('on','done');
-    if (i < step)       el.classList.add('done');
-    else if (i === step) el.classList.add('on');
-  }
-
-  $('btnBack').style.visibility = step <= 1 ? 'hidden' : 'visible';
-
-  const nb = $('btnNext');
-  if (step === 4) { nb.innerHTML = '✅ Confirm Booking'; nb.classList.add('gs'); }
-  else            { nb.innerHTML = 'Next →';             nb.classList.remove('gs'); }
-
-  if (step === 1) buildGrid('gPickup','pickup','errP');
-  if (step === 2) buildGrid('gDest','dest','errD', ST.pickup);
-  if (step === 3) {
-    buildDates();
-    if (!ST.date) {
-      $('noDateHint').style.display   = 'block';
-      $('slotsSection').style.display = 'none';
-    } else {
-      $('noDateHint').style.display   = 'none';
-      $('slotsSection').style.display = 'block';
-      $('wcFilterRow').style.display  = ST.wc ? 'block' : 'none';
+/* ============================================================
+   DATE GRID
+   ============================================================ */
+function buildDates() {
+  const g=$('dateRow'); g.innerHTML='';
+  const t=new Date();
+  const {months,days,today,tomorrow} = T();
+  for(let i=0;i<3;i++){
+    const d=new Date(t); d.setDate(t.getDate()+i);
+    const lbl  = i===0?today:i===1?tomorrow:days[d.getDay()];
+    const dstr = `${d.getDate()} ${months[d.getMonth()]}`;
+    const seed = d.getDate()*31+d.getMonth()*7;
+    const card = document.createElement('div');
+    card.className='d-card'+(ST.date===dstr?' sel':'');
+    card.innerHTML=`<div class="d-num">${dstr}</div><div class="d-txt">${lbl}</div>`;
+    card.addEventListener('click',()=>{
+      document.querySelectorAll('.d-card').forEach(c=>c.classList.remove('sel'));
+      card.classList.add('sel');
+      ST.date=dstr; ST.dateLbl=lbl; ST.dateSeed=seed; ST.selectedSlot=null;
+      $('noDateHint').style.display='none';
+      $('slotsSection').style.display='block';
+      $('wcFilterRow').style.display=ST.wc?'block':'none';
       renderSlots();
+    });
+    g.appendChild(card);
+  }
+}
+
+/* ============================================================
+   SLOT GENERATION
+   ============================================================ */
+function sRand(s){ const x=Math.sin(s+1)*10000; return x-Math.floor(x); }
+
+function getSlots(seed){
+  const out=[];
+  let idx=0;
+  for(let h=7;h<=21;h++){
+    for(let m=0;m<60;m+=15){
+      if(h===21&&m>0) break;
+      const r1=sRand(seed*1000+idx*17);
+      const r2=sRand(seed*1000+idx*23+5);
+      const r3=sRand(seed*1000+idx*31+11);
+      const isWC   = r1<0.42;
+      const maxPax = isWC?4:5;
+      const vehId  = 'CR-'+Math.floor(r3*900+100);
+      const rush   = (h>=8&&h<=10)||(h>=13&&h<=15)||(h>=17&&h<=19);
+      let left = rush ? (r2<0.35?0:Math.ceil(r2*2)) : Math.round(r2*maxPax);
+      left = Math.max(0,Math.min(left,maxPax));
+      out.push({h,m,isWC,left,maxPax,vehId});
+      idx++;
     }
   }
-  if (step === 4) populateReview();
-  if (step === 5) populateConfirm();
+  return out;
 }
 
-function goNext() {
-  if (ST.step === 1 && !ST.pickup)       { $('errP').classList.add('on');    return; }
-  if (ST.step === 2 && !ST.dest)         { $('errD').classList.add('on');    return; }
-  if (ST.step === 2 && ST.dest === ST.pickup) {
-    const e = $('errD');
-    e.innerHTML = '⚠️ &nbsp; Destination must be different from your pickup location';
-    e.classList.add('on');
-    return;
-  }
-  if (ST.step === 3 && !ST.date)         { alert('Please select a date to continue.'); return; }
-  if (ST.step === 3 && !ST.selectedSlot) { $('errSlot').classList.add('on'); return; }
-  if (ST.step < 5) goTo(ST.step + 1);
+function fmtTime(h,m){
+  return `${p2(h%12||12)}:${p2(m)} ${h>=12?'PM':'AM'}`;
+}
+function dotHtml(left,maxPax){
+  const tk=maxPax-left; let html='';
+  for(let i=0;i<maxPax;i++) html+=`<span class="dot ${i<tk?'tk':'fr'}"></span>`;
+  return html;
 }
 
-function goBack() { if (ST.step > 1) goTo(ST.step - 1); }
+/* ============================================================
+   SLOT RENDERING (with dispatch card when all full)
+   ============================================================ */
+function renderSlots(){
+  const all   = getSlots(ST.dateSeed);
+  const list  = ST.wcFilter ? all.filter(s=>s.isWC) : all;
+  const wrap  = $('slotsWrap'); wrap.innerHTML='';
+  const L     = T();
 
-function resetAll() {
-  Object.assign(ST, {
-    pickup:null, dest:null,
-    date:null, dateLbl:null, dateSeed:0,
-    selectedSlot:null, wcFilter:false,
+  const groups=[
+    {key:'m', label:L.morning,    bay:BAY_NAMES[0], slots:list.filter(s=>s.h<12)},
+    {key:'a', label:L.afternoon,  bay:BAY_NAMES[1], slots:list.filter(s=>s.h>=12&&s.h<17)},
+    {key:'e', label:L.evening,    bay:BAY_NAMES[2], slots:list.filter(s=>s.h>=17)},
+  ];
+
+  groups.forEach(grp=>{
+    if(!grp.slots.length) return;
+    const gEl=document.createElement('div'); gEl.className='slot-group';
+    const hd=document.createElement('div'); hd.className='slot-group-hd'; hd.textContent=grp.label;
+    gEl.appendChild(hd);
+    const grid=document.createElement('div'); grid.className='slot-grid';
+
+    const allFull = grp.slots.every(s=>s.left===0);
+
+    grp.slots.forEach(slot=>{
+      const isFull=slot.left===0, isFew=slot.left>0&&slot.left<=2;
+      const isSel=ST.selectedSlot&&!ST.selectedSlot.isDispatch&&ST.selectedSlot.h===slot.h&&ST.selectedSlot.m===slot.m;
+      let cls='slot-card'+(isFull?' full':'')+(isSel?' sel':'')+(slot.isWC?' wc-slot':'');
+      let badgeCls='b-ok', badgeTxt=`${slot.left} ${slot.left===1?'seat':'seats'} left`;
+      if(isFull){badgeCls='b-full';badgeTxt=L.legFull;}
+      else if(isFew){badgeCls='b-few';}
+      const card=document.createElement('div'); card.className=cls;
+      card.innerHTML=`
+        <div class="slot-time-big">${fmtTime(slot.h,slot.m)}</div>
+        <div class="slot-veh${slot.isWC?' wc':''}">${slot.isWC?'♿':'🚗'} ${slot.isWC?L.wcAV:L.stdAV}</div>
+        <div class="dots-row">${dotHtml(slot.left,slot.maxPax)}</div>
+        <div class="slot-cap">${slot.left} / ${slot.maxPax} ${L.legAvail.toLowerCase()}</div>
+        <div class="slot-badge ${badgeCls}">${badgeTxt}</div>
+        <div class="slot-veh-id">${slot.vehId}</div>`;
+      if(!isFull) card.addEventListener('click',()=>{ ST.selectedSlot=slot; $('errSlot').classList.remove('on'); renderSlots(); });
+      grid.appendChild(card);
+    });
+
+    /* Dispatch card when all slots in group are full */
+    if(allFull){
+      const dispEta = Math.floor(sRand(ST.dateSeed*99+grp.key.charCodeAt(0))*10+15);
+      const isSel   = ST.selectedSlot&&ST.selectedSlot.isDispatch&&ST.selectedSlot.groupKey===grp.key;
+      const dc=document.createElement('div');
+      dc.className='slot-card dispatch'+(isSel?' sel':'');
+      dc.innerHTML=`
+        <div class="slot-time-big" style="color:#A86800">🚐 ${L.dispatchTitle}</div>
+        <div class="slot-veh disp">🏢 ${L.dispatchFrom} ${grp.bay}</div>
+        <div class="dots-row">${dotHtml(5,5).replace(/fr/g,'fresh')}</div>
+        <div class="slot-cap">5 / 5 ${L.legAvail.toLowerCase()}</div>
+        <div class="slot-badge b-disp">On Demand</div>
+        <div class="dispatch-eta">${L.dispatchEtaLbl} ~${dispEta} mins</div>`;
+      dc.addEventListener('click',()=>{
+        ST.selectedSlot={isDispatch:true,groupKey:grp.key,dispatchEta:dispEta,bay:grp.bay,left:5,maxPax:5,isWC:ST.wc,vehId:'CR-DISPATCH'};
+        $('errSlot').classList.remove('on');
+        renderSlots();
+      });
+      grid.appendChild(dc);
+    }
+
+    gEl.appendChild(grid); wrap.appendChild(gEl);
   });
+  if(!wrap.children.length) wrap.innerHTML=`<div class="no-slots-msg">${L.legFull}</div>`;
+}
+
+/* ============================================================
+   LIVE TRACKER + ETA COUNTDOWN
+   ============================================================ */
+let etaInterval=null;
+
+function startTracker(){
+  clearInterval(etaInterval);
+  const car=$('trackerCar');
+  if(car){ car.style.animation='none'; car.offsetHeight; car.style.animation=''; }
+
+  let secs;
+  if(ST.selectedSlot&&ST.selectedSlot.isDispatch){
+    secs = ST.selectedSlot.dispatchEta * 60;
+    $('tracker-bay-lbl').textContent = T().trackerBay.replace('Bay', ST.selectedSlot.bay||'Bay A');
+  } else {
+    secs = 180;
+    $('tracker-bay-lbl').textContent = T().trackerBay;
+  }
+
+  function fmt(s){ const m=Math.floor(s/60); return m>0?`${m}:${p2(s%60)}`:`${s}s`; }
+  $('etaNum').textContent = fmt(secs);
+  $('etaNum').style.color = '#A86800';
+
+  etaInterval = setInterval(()=>{
+    secs--;
+    if(secs<=0){
+      clearInterval(etaInterval);
+      $('etaNum').textContent = '🎉 Arrived!';
+      $('etaNum').style.color = 'var(--green)';
+      $('eta-lbl').textContent = '';
+    } else {
+      $('etaNum').textContent = fmt(secs);
+    }
+  },1000);
+}
+
+/* ============================================================
+   REVIEW
+   ============================================================ */
+function populateReview(){
+  const L=T();
+  $('rvP').textContent    = ST.pickup ? LANGS[ST.lang].locs[LANGS['en'].locs.indexOf(ST.pickup)] : '';
+  $('rvD').textContent    = ST.dest   ? LANGS[ST.lang].locs[LANGS['en'].locs.indexOf(ST.dest)]   : '';
+  $('rvDate').textContent = ST.date   ? `${ST.dateLbl}, ${ST.date}` : '';
+  if(ST.selectedSlot){
+    const s=ST.selectedSlot;
+    if(s.isDispatch){
+      $('rvTime').textContent  = `${L.dispatchTitle} (~${s.dispatchEta} mins)`;
+      $('rvVeh').textContent   = `🚐 ${L.dispatchFrom} ${s.bay}`;
+      $('rvVehId').textContent = `Vehicle: CR-DISPATCH`;
+      $('rvSeats').textContent = `5 / 5`;
+    } else {
+      $('rvTime').textContent  = fmtTime(s.h,s.m);
+      $('rvVeh').textContent   = s.isWC ? `♿ ${L.wcAV}` : `🚗 ${L.stdAV}`;
+      $('rvVehId').textContent = `Vehicle: ${s.vehId}`;
+      $('rvSeats').textContent = `${s.left-1} / ${s.maxPax}`;
+    }
+  }
+  const etaOpts=[8,10,12,14,15];
+  $('rvETA').textContent=`~${etaOpts[Math.floor(Math.random()*etaOpts.length)]} minutes`;
+}
+
+/* ============================================================
+   CONFIRMATION
+   ============================================================ */
+function populateConfirm(){
+  $('refNum').textContent = 'CR'+Math.floor(10000+Math.random()*90000);
+  const ring=document.querySelector('.check-ring');
+  ring.style.animation='none'; ring.offsetHeight; ring.style.animation='';
+  $('eta-lbl').textContent = T().etaLbl;
+  $('etaNum').style.color  = '#A86800';
+  setTimeout(startTracker, 400);
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+let busy=false;
+const SCREENS=['sw','s1','s2','s3','s4','sc'];
+
+function goTo(step){
+  if(busy) return; busy=true;
+  const dir=step>ST.step?1:-1;
+  const fe=$(SCREENS[ST.step]), te=$(SCREENS[step]);
+  fe.classList.remove('on'); fe.classList.add(dir>0?'sol':'sor');
+  te.classList.add('on', dir>0?'sil':'sir');
+  setTimeout(()=>{ fe.classList.remove('sol','sor'); te.classList.remove('sil','sir'); busy=false; },370);
+  ST.step=step;
+
+  const showUI=step>=1&&step<=4;
+  $('topbar').classList.toggle('on',showUI);
+  $('footer').classList.toggle('on',showUI);
+  for(let i=1;i<=4;i++){
+    const el=$('si'+i); el.classList.remove('on','done');
+    if(i<step) el.classList.add('done'); else if(i===step) el.classList.add('on');
+  }
+  $('btnBack').style.visibility=step<=1?'hidden':'visible';
+  const nb=$('btn-next-txt');
+  if(step===4){nb.textContent=T().btnConfirm; $('btnNext').classList.add('gs');}
+  else{nb.textContent=T().btnNext; $('btnNext').classList.remove('gs');}
+
+  if(step===1) buildGrid('gPickup','pickup','errP');
+  if(step===2) buildGrid('gDest','dest','errD',ST.pickup);
+  if(step===3){ buildDates(); if(!ST.date){$('noDateHint').style.display='block';$('slotsSection').style.display='none';}else{$('noDateHint').style.display='none';$('slotsSection').style.display='block';$('wcFilterRow').style.display=ST.wc?'block':'none';renderSlots();} }
+  if(step===4) populateReview();
+  if(step===5) populateConfirm();
+  if(step===5) clearTimeout(inactTimer);
+  else resetInactivityTimer();
+}
+
+function goNext(){
+  if(ST.step===1&&!ST.pickup){$('errP').textContent=T().errPickup;$('errP').classList.add('on');return;}
+  if(ST.step===2&&!ST.dest){$('errD').textContent=T().errDest;$('errD').classList.add('on');return;}
+  if(ST.step===2&&ST.dest===ST.pickup){$('errD').textContent=T().errSame;$('errD').classList.add('on');return;}
+  if(ST.step===3&&!ST.date){alert(T().s3NoDate);return;}
+  if(ST.step===3&&!ST.selectedSlot){$('errSlot').textContent=T().errSlot;$('errSlot').classList.add('on');return;}
+  if(ST.step<5) goTo(ST.step+1);
+}
+function goBack(){ if(ST.step>1) goTo(ST.step-1); }
+
+function resetAll(){
+  clearTimeout(inactTimer); clearInterval(etaInterval); clearInterval(inactInterval);
+  Object.assign(ST,{pickup:null,dest:null,date:null,dateLbl:null,dateSeed:0,selectedSlot:null,wcFilter:false});
   $('wcFilterBtn').classList.remove('active');
-  $('wcFilterBtn').textContent = '♿ Show wheelchair accessible slots only';
   goTo(0);
 }
 
-/* ---- Modal helpers ---- */
-function openModal(id) { $(id).classList.add('on'); }
-function closeModal(id) { $(id).classList.remove('on'); }
+/* ============================================================
+   MODALS
+   ============================================================ */
+function openModal(id){$(id).classList.add('on');}
+function closeModal(id){$(id).classList.remove('on');}
 
-/* ---- SingPass simulation ---- */
-let spTimer = null;
-
-function singpassScan() {
-  // Reset to scanning state
-  $('spScanning').style.display = 'block';
-  $('spSuccess').style.display  = 'none';
-  const bar = $('spBar');
-  bar.style.transition = 'none';
-  bar.style.width = '0';
+let spTimer=null;
+function singpassScan(){
+  $('spScanning').style.display='block'; $('spSuccess').style.display='none';
+  const bar=$('spBar'); bar.style.transition='none'; bar.style.width='0';
   openModal('spModal');
-
-  // Start progress bar after a frame
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      bar.style.transition = 'width 2.5s linear';
-      bar.style.width = '100%';
-    });
-  });
-
-  // Switch to success state after 2.5s
-  spTimer = setTimeout(() => {
-    $('spScanning').style.display = 'none';
-    $('spSuccess').style.display  = 'block';
-  }, 2600);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ bar.style.transition='width 2.5s linear'; bar.style.width='100%'; }));
+  spTimer=setTimeout(()=>{ $('spScanning').style.display='none'; $('spSuccess').style.display='block'; },2600);
 }
+function closeSP(){ clearTimeout(spTimer); closeModal('spModal'); $('spScanning').style.display='block'; $('spSuccess').style.display='none'; }
+function spProceed(){ closeSP(); ST.pickup='My Home'; goTo(2); }
 
-function closeSP() {
-  clearTimeout(spTimer);
-  closeModal('spModal');
-  // Reset for next open
-  $('spScanning').style.display = 'block';
-  $('spSuccess').style.display  = 'none';
-}
+function helpDialog(){ openModal('helpModal'); }
 
-function spProceed() {
-  closeSP();
-  ST.pickup = 'My Home';
-  goTo(2); // Skip pickup screen, go straight to destination
-}
-
-/* ---- Help dialog ---- */
-function helpDialog() { openModal('helpModal'); }
-
-$('btnBack').style.visibility = 'hidden';
+/* ============================================================
+   INIT
+   ============================================================ */
+$('btnBack').style.visibility='hidden';
+applyLang('en');
 </script>
 </body>
 </html>
