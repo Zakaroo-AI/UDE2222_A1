@@ -1,0 +1,13 @@
+
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "CareRide AV Kiosk"
+
+format:
+  html:
+    theme: none
+    page-layout: custom
+

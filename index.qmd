@@ -1,0 +1,11 @@
+---
+title: "CareRide"
+format:
+  html:
+    page-layout: custom
+---
+
+```{r echo=FALSE}
+htmltools::includeHTML("careride.html")
+```
+
