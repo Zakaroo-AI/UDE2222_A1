@@ -85,14 +85,28 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
 .app-sub     { font-size:15px; font-weight:700; color:var(--amber); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; animation:fadeUp .5s ease both .3s; }
 .app-tagline { font-size:20px; font-weight:600; color:var(--muted); line-height:1.55; max-width:420px; margin-bottom:28px; animation:fadeUp .5s ease both .35s; }
 .clock-pill  { background:var(--teal-lt); color:var(--teal); font-size:20px; font-weight:800; padding:12px 30px; border-radius:100px; margin-bottom:28px; display:inline-flex; align-items:center; gap:10px; animation:fadeUp .5s ease both .42s; }
-.singpass-row { display:flex; gap:12px; align-items:center; margin-bottom:12px; animation:fadeUp .5s ease both .5s; width:100%; max-width:400px; }
+.singpass-row { display:flex; gap:12px; align-items:center; margin-bottom:12px; animation:fadeUp .5s ease both .5s; width:100%; max-width:440px; }
 .btn-xl { flex:1; padding:22px; background:var(--teal); color:white; border:none; border-radius:20px; font-family:inherit; font-size:24px; font-weight:900; cursor:pointer; transition:all .2s; box-shadow:0 8px 30px rgba(10,122,142,.38); }
 .btn-xl:hover { background:var(--teal-dark); transform:translateY(-2px); }
 .btn-xl:active { transform:scale(.98); }
+/* SingPass primary button */
+.btn-sp-main {
+  width:100%; max-width:440px;
+  padding:24px 28px; background:#E2231A; color:white;
+  border:none; border-radius:22px; font-family:inherit;
+  font-size:26px; font-weight:900; cursor:pointer;
+  transition:all .2s; display:flex; align-items:center;
+  justify-content:center; gap:14px;
+  box-shadow:0 8px 32px rgba(226,35,26,.38);
+  animation:fadeUp .5s ease both .5s;
+}
+.btn-sp-main:hover  { background:#C41C14; transform:translateY(-2px); }
+.btn-sp-main:active { transform:scale(.98); }
 .btn-sp { padding:22px 18px; background:var(--white); color:var(--teal); border:2.5px solid var(--teal); border-radius:20px; font-family:inherit; font-size:18px; font-weight:900; cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:7px; white-space:nowrap; }
 .btn-sp:hover { background:var(--teal-lt); }
-.btn-ghost { width:100%; max-width:400px; padding:16px; background:transparent; color:var(--muted); border:2.5px solid var(--border); border-radius:18px; font-family:inherit; font-size:18px; font-weight:700; cursor:pointer; transition:all .2s; animation:fadeUp .5s ease both .58s; }
+.btn-ghost { width:100%; max-width:440px; padding:14px; background:transparent; color:var(--muted); border:2.5px solid var(--border); border-radius:18px; font-family:inherit; font-size:16px; font-weight:700; cursor:pointer; transition:all .2s; animation:fadeUp .5s ease both .64s; }
 .btn-ghost:hover { border-color:var(--teal); color:var(--teal); background:var(--teal-lt); }
+.sp-why { font-size:14px; font-weight:600; color:var(--muted); max-width:360px; text-align:center; line-height:1.55; animation:fadeUp .5s ease both .58s; margin-bottom:10px; }
 @keyframes popUp  { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
 @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
@@ -173,6 +187,11 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
 .b-full { background:#EAEFF2; color:#8FA3AD; }
 .b-disp { background:var(--amber-lt); color:#A86800; }
 .dispatch-eta   { font-size:15px; font-weight:800; color:#A86800; margin-top:6px; }
+.d-card.demo-date { border-color:var(--amber); }
+.d-card.demo-date .d-num { color:#A86800; }
+.d-card.demo-date .d-txt { color:#A86800; }
+.d-card.demo-date:hover  { border-color:#E8960A; background:var(--amber-lt); }
+.d-card.demo-date.sel    { border-color:#E8960A; background:var(--amber-lt); }
 .no-date-hint { text-align:center; padding:44px 24px; font-size:19px; font-weight:600; color:var(--muted); display:flex; flex-direction:column; align-items:center; gap:12px; }
 .no-date-hint .hint-icon { font-size:44px; }
 .no-slots-msg { text-align:center; padding:24px 16px; font-size:16px; font-weight:600; color:var(--muted); background:var(--bg); border-radius:14px; }
@@ -361,13 +380,11 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <span id="clockDisp">-- : --</span>
       </div>
-      <div class="singpass-row">
-        <button class="btn-xl" id="btn-book" onclick="goTo(1)">🚗 Book a Ride</button>
-        <button class="btn-sp" onclick="singpassScan()">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
-          SingPass
-        </button>
-      </div>
+      <button class="btn-sp-main" id="btn-book" onclick="singpassScan()">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
+        <span id="btn-book-lbl">Scan SingPass to Book</span>
+      </button>
+      <p class="sp-why" id="sp-why-lbl">SingPass verifies your identity and fills in your home address automatically. No typing needed.</p>
       <button class="btn-ghost" id="btn-help" onclick="helpDialog()">❓ I Need Help</button>
     </div>
 
@@ -619,7 +636,8 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
 const LANGS = {
   en: {
     swTagline:'Book your safe, door-to-door autonomous vehicle ride independently and easily.',
-    btnBook:'🚗 Book a Ride', btnHelp:'❓ I Need Help',
+    btnBook:'Scan SingPass to Book', btnHelp:'❓ I Need Help',
+    spWhyLbl:'SingPass verifies your identity and fills in your home address automatically. No typing needed.',
     lbl1:'Pickup', lbl2:'Destination', lbl3:'Date & Time', lbl4:'Review',
     s1Title:'Where are you now?',
     s1Sub:'Tap your pickup location. Tap the star to save a favourite.',
@@ -679,7 +697,8 @@ const LANGS = {
   },
   zh: {
     swTagline:'安全、便捷地预约自动驾驶接送服务，轻松独立出行。',
-    btnBook:'🚗 预约乘车', btnHelp:'❓ 需要帮助',
+    btnBook:'扫描 SingPass 预约', btnHelp:'❓ 需要帮助',
+    spWhyLbl:'SingPass 将验证您的身份并自动填写您的家庭住址，无需手动输入。',
     lbl1:'上车地点', lbl2:'目的地', lbl3:'日期与时间', lbl4:'确认',
     s1Title:'您现在在哪里？',
     s1Sub:'点击选择您的上车地点。点击星号保存常用地点。',
@@ -736,7 +755,8 @@ const LANGS = {
   },
   ms: {
     swTagline:'Tempah perjalanan kenderaan autonomi anda dengan selamat dan mudah.',
-    btnBook:'🚗 Tempah Perjalanan', btnHelp:'❓ Perlukan Bantuan',
+    btnBook:'Imbas SingPass untuk Tempah', btnHelp:'❓ Perlukan Bantuan',
+    spWhyLbl:'SingPass mengesahkan identiti anda dan mengisi alamat rumah secara automatik. Tidak perlu menaip.',
     lbl1:'Pengambilan', lbl2:'Destinasi', lbl3:'Tarikh & Masa', lbl4:'Semak',
     s1Title:'Di mana anda sekarang?',
     s1Sub:'Ketik lokasi pengambilan anda. Ketik bintang untuk simpan kegemaran.',
@@ -793,7 +813,8 @@ const LANGS = {
   },
   ta: {
     swTagline:'பாதுகாப்பான, வீட்டிற்கு வீடு AV சவாரியை எளிதாக முன்பதிவு செய்யுங்கள்.',
-    btnBook:'🚗 சவாரி முன்பதிவு', btnHelp:'❓ உதவி தேவை',
+    btnBook:'SingPass ஸ்கேன் செய்து முன்பதிவு', btnHelp:'❓ உதவி தேவை',
+    spWhyLbl:'SingPass உங்கள் அடையாளத்தை சரிபார்த்து வீட்டு முகவரியை தானாக நிரப்பும். தட்டச்சு தேவையில்லை.',
     lbl1:'ஏறும் இடம்', lbl2:'சேரும் இடம்', lbl3:'தேதி & நேரம்', lbl4:'மதிப்பாய்வு',
     s1Title:'நீங்கள் இப்போது எங்கு இருக்கிறீர்கள்?',
     s1Sub:'ஏறும் இடத்தை தேர்வு செய்யுங்கள். நட்சத்திரத்தை அழுத்தி சேமியுங்கள்.',
@@ -863,6 +884,7 @@ const ST = {
   pickup:null, dest:null,
   date:null, dateLbl:null, dateSeed:0,
   selectedSlot:null, wc:false, wcFilter:false,
+  forceFullDemo:false,
 };
 
 let favs = [];
@@ -890,7 +912,8 @@ function applyLang(code) {
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('on', b.dataset.lang===code));
   // Welcome
   $('sw-tagline').textContent    = L.swTagline;
-  $('btn-book').textContent      = L.btnBook;
+  $('btn-book-lbl').textContent  = L.btnBook;
+  if($('sp-why-lbl')) $('sp-why-lbl').textContent = L.spWhyLbl||'SingPass verifies your identity and fills in your home address automatically. No typing needed.';
   $('btn-help').textContent      = L.btnHelp;
   // Steps
   $('lbl-s1').textContent = L.lbl1; $('lbl-s2').textContent = L.lbl2;
@@ -1062,6 +1085,7 @@ function buildDates() {
   const g=$('dateRow'); g.innerHTML='';
   const t=new Date();
   const {months,days,today,tomorrow} = T();
+  g.style.gridTemplateColumns='repeat(4,1fr)';
   for(let i=0;i<3;i++){
     const d=new Date(t); d.setDate(t.getDate()+i);
     const lbl  = i===0?today:i===1?tomorrow:days[d.getDay()];
@@ -1073,7 +1097,8 @@ function buildDates() {
     card.addEventListener('click',()=>{
       document.querySelectorAll('.d-card').forEach(c=>c.classList.remove('sel'));
       card.classList.add('sel');
-      ST.date=dstr; ST.dateLbl=lbl; ST.dateSeed=seed; ST.selectedSlot=null;
+      ST.date=dstr; ST.dateLbl=lbl; ST.dateSeed=seed;
+      ST.forceFullDemo=false; ST.selectedSlot=null;
       $('noDateHint').style.display='none';
       $('slotsSection').style.display='block';
       $('wcFilterRow').style.display=ST.wc?'block':'none';
@@ -1081,6 +1106,24 @@ function buildDates() {
     });
     g.appendChild(card);
   }
+  /* 4th card — forced full demo date */
+  const demoLbl  = '🎬 Demo';
+  const demoStr  = 'Full Day';
+  const demoCard = document.createElement('div');
+  demoCard.className='d-card demo-date'+(ST.date===demoStr?' sel':'');
+  demoCard.innerHTML=`<div class="d-num" style="font-size:18px">${demoLbl}</div><div class="d-txt">All Slots Full</div>`;
+  demoCard.style.borderColor = ST.date===demoStr ? 'var(--amber)' : '';
+  demoCard.addEventListener('click',()=>{
+    document.querySelectorAll('.d-card').forEach(c=>{ c.classList.remove('sel'); c.style.borderColor=''; });
+    demoCard.classList.add('sel'); demoCard.style.borderColor='var(--amber)';
+    ST.date=demoStr; ST.dateLbl='Demo Day'; ST.dateSeed=9999;
+    ST.forceFullDemo=true; ST.selectedSlot=null;
+    $('noDateHint').style.display='none';
+    $('slotsSection').style.display='block';
+    $('wcFilterRow').style.display=ST.wc?'block':'none';
+    renderSlots();
+  });
+  g.appendChild(demoCard);
 }
 
 /* ============================================================
@@ -1141,10 +1184,10 @@ function renderSlots(){
     gEl.appendChild(hd);
     const grid=document.createElement('div'); grid.className='slot-grid';
 
-    const allFull = grp.slots.every(s=>s.left===0);
+    const allFull = ST.forceFullDemo || grp.slots.every(s=>s.left===0);
 
     grp.slots.forEach(slot=>{
-      const isFull=slot.left===0, isFew=slot.left>0&&slot.left<=2;
+      const isFull=ST.forceFullDemo||slot.left===0, isFew=!ST.forceFullDemo&&slot.left>0&&slot.left<=2;
       const isSel=ST.selectedSlot&&!ST.selectedSlot.isDispatch&&ST.selectedSlot.h===slot.h&&ST.selectedSlot.m===slot.m;
       let cls='slot-card'+(isFull?' full':'')+(isSel?' sel':'')+(slot.isWC?' wc-slot':'');
       let badgeCls='b-ok', badgeTxt=`${slot.left} ${slot.left===1?'seat':'seats'} left`;
@@ -1310,7 +1353,7 @@ function goBack(){ if(ST.step>1) goTo(ST.step-1); }
 
 function resetAll(){
   clearTimeout(inactTimer); clearInterval(etaInterval); clearInterval(inactInterval);
-  Object.assign(ST,{pickup:null,dest:null,date:null,dateLbl:null,dateSeed:0,selectedSlot:null,wcFilter:false});
+  Object.assign(ST,{pickup:null,dest:null,date:null,dateLbl:null,dateSeed:0,selectedSlot:null,wcFilter:false,forceFullDemo:false});
   $('wcFilterBtn').classList.remove('active');
   goTo(0);
 }
