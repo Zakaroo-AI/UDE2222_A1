@@ -187,11 +187,35 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
 .b-full { background:#EAEFF2; color:#8FA3AD; }
 .b-disp { background:var(--amber-lt); color:#A86800; }
 .dispatch-eta   { font-size:15px; font-weight:800; color:#A86800; margin-top:6px; }
+/* Full slot: not greyed out since it has a dispatch option */
+.slot-card.full-nodim {
+  opacity:1;
+  cursor:default;
+  pointer-events:all;
+}
+/* Inline dispatch section inside a full slot card */
+.dispatch-inline {
+  margin-top:12px;
+  border-top:1.5px dashed var(--amber);
+  padding-top:10px;
+  cursor:pointer;
+  border-radius:0 0 10px 10px;
+  transition:all .2s;
+}
+.dispatch-inline:hover { background:var(--amber-lt); border-radius:10px; padding:8px; margin-top:10px; }
+.dispatch-inline-sel  { background:var(--amber-lt); border-radius:10px; padding:8px; margin-top:10px; box-shadow:0 0 0 3px rgba(245,163,20,.25); }
+.dispatch-inline-top  { display:flex; align-items:center; gap:7px; margin-bottom:4px; }
+.dispatch-inline-lbl  { font-size:14px; font-weight:900; color:#A86800; }
+.dispatch-inline-meta { font-size:12px; font-weight:700; color:var(--muted); margin-bottom:6px; }
+.dispatch-inline-dots { display:flex; gap:3px; }
+.dot.fresh { background:var(--amber); }
+
 .d-card.demo-date { border-color:var(--amber); }
 .d-card.demo-date .d-num { color:#A86800; }
 .d-card.demo-date .d-txt { color:#A86800; }
 .d-card.demo-date:hover  { border-color:#E8960A; background:var(--amber-lt); }
 .d-card.demo-date.sel    { border-color:#E8960A; background:var(--amber-lt); }
+
 .no-date-hint { text-align:center; padding:44px 24px; font-size:19px; font-weight:600; color:var(--muted); display:flex; flex-direction:column; align-items:center; gap:12px; }
 .no-date-hint .hint-icon { font-size:44px; }
 .no-slots-msg { text-align:center; padding:24px 16px; font-size:16px; font-weight:600; color:var(--muted); background:var(--bg); border-radius:14px; }
@@ -601,7 +625,7 @@ body { display:flex; align-items:stretch; justify-content:center; min-height:100
         <div class="sp-qr-icon">⬛</div>
       </div>
       <div class="sp-scan-label" id="sp-scan-lbl">Hold your IC barcode or SingPass QR code up to the scanner</div>
-      <div class="sp-demo-note" id="sp-demo-note">Demo mode — simulating scan automatically</div>
+      <div class="sp-demo-note" id="sp-demo-note">Demo mode: simulating scan automatically</div>
       <div class="sp-progress"><div class="sp-progress-bar" id="spBar"></div></div>
     </div>
     <div class="sp-success" id="spSuccess">
@@ -666,7 +690,7 @@ const LANGS = {
     btnBack:'← Back', btnNext:'Next →', btnConfirm:'✅ Confirm Booking',
     stdAV:'Standard AV', wcAV:'Wheelchair Accessible AV',
     dispatchTitle:'On-Demand Dispatch',
-    dispatchFrom:'Fresh AV from Bay',
+    dispatchFrom:'Fresh AV from',
     dispatchEtaLbl:'Arriving in approx.',
     morning:'Morning (7 AM to 12 PM)', afternoon:'Afternoon (12 PM to 5 PM)', evening:'Evening (5 PM to 9 PM)',
     errPickup:'⚠️ Please select a pickup location to continue',
@@ -685,7 +709,7 @@ const LANGS = {
     helpCloseBtn:'Got it, thank you!',
     spSub:'Identity verification',
     spScanLbl:'Hold your IC barcode or SingPass QR code up to the scanner',
-    spDemoNote:'Demo mode — simulating scan automatically',
+    spDemoNote:'Demo mode: simulating scan automatically',
     spVerified:'Identity Verified', spAutofill:'🏠 Home address filled in automatically',
     spProceedBtn:'Continue to Book →',
     inactTitle:'Still there?', inactSub:'Tap anywhere to continue your booking',
@@ -743,7 +767,7 @@ const LANGS = {
     hStep4:'确认您的行程信息',
     helpCloseBtn:'明白，谢谢！',
     spSub:'身份验证', spScanLbl:'请将您的身份证条码或SingPass二维码对准扫描仪',
-    spDemoNote:'演示模式 — 自动模拟扫描',
+    spDemoNote:'演示模式：自动模拟扫描',
     spVerified:'身份验证成功', spAutofill:'🏠 住址已自动填入',
     spProceedBtn:'继续预约 →',
     inactTitle:'您还在吗？', inactSub:'点击任意处继续预约',
@@ -784,7 +808,7 @@ const LANGS = {
     btnAgain:'🔄 Tempah Lagi',
     btnBack:'← Kembali', btnNext:'Seterusnya →', btnConfirm:'✅ Sahkan Tempahan',
     stdAV:'Kenderaan Autonomi Standard', wcAV:'Kenderaan Mesra OKU',
-    dispatchTitle:'Penghantaran Atas Permintaan', dispatchFrom:'AV Segar dari Bay',
+    dispatchTitle:'Penghantaran Atas Permintaan', dispatchFrom:'AV Segar dari',
     dispatchEtaLbl:'Anggaran masa tiba',
     morning:'Pagi (7 PG - 12 TH)', afternoon:'Tengah Hari (12 TH - 5 PTG)', evening:'Petang (5 PTG - 9 MLM)',
     errPickup:'⚠️ Sila pilih lokasi pengambilan', errDest:'⚠️ Sila pilih destinasi',
@@ -801,7 +825,7 @@ const LANGS = {
     hStep4:'Semak maklumat dan sahkan',
     helpCloseBtn:'Faham, terima kasih!',
     spSub:'Pengesahan identiti', spScanLbl:'Tunjukkan barcode IC atau kod QR SingPass anda ke pengimbas',
-    spDemoNote:'Mod demo — mensimulasikan imbasan secara automatik',
+    spDemoNote:'Mod demo: mensimulasikan imbasan secara automatik',
     spVerified:'Identiti Disahkan', spAutofill:'🏠 Alamat rumah diisi secara automatik',
     spProceedBtn:'Teruskan Tempahan →',
     inactTitle:'Masih di sana?', inactSub:'Ketik di mana-mana untuk teruskan tempahan',
@@ -861,7 +885,7 @@ const LANGS = {
     hStep4:'விவரங்களை சரிபார்த்து உறுதிசெய்யுங்கள்',
     helpCloseBtn:'நன்றி, புரிந்தது!',
     spSub:'அடையாள சரிபார்ப்பு', spScanLbl:'உங்கள் IC பார்கோட் அல்லது SingPass QR குறியீட்டை ஸ்கேனரில் காட்டுங்கள்',
-    spDemoNote:'டெமோ பயன்முறை — தானாக ஸ்கேன் செய்கிறது',
+    spDemoNote:'டெமோ பயன்முறை: தானாக ஸ்கேன் செய்கிறது',
     spVerified:'அடையாளம் சரிபார்க்கப்பட்டது', spAutofill:'🏠 வீட்டு முகவரி தானாக நிரப்பப்பட்டது',
     spProceedBtn:'முன்பதிவு செய்ய தொடரவும் →',
     inactTitle:'நீங்கள் இன்னும் இருக்கிறீர்களா?', inactSub:'தொடர எங்கும் அழுத்துங்கள்',
@@ -1106,7 +1130,7 @@ function buildDates() {
     });
     g.appendChild(card);
   }
-  /* 4th card — forced full demo date */
+  /* 4th card: forced full demo date */
   const demoLbl  = '🎬 Demo';
   const demoStr  = 'Full Day';
   const demoCard = document.createElement('div');
@@ -1163,7 +1187,7 @@ function dotHtml(left,maxPax){
 }
 
 /* ============================================================
-   SLOT RENDERING (with dispatch card when all full)
+   SLOT RENDERING: per-slot dispatch button when that slot is full
    ============================================================ */
 function renderSlots(){
   const all   = getSlots(ST.dateSeed);
@@ -1172,63 +1196,97 @@ function renderSlots(){
   const L     = T();
 
   const groups=[
-    {key:'m', label:L.morning,    bay:BAY_NAMES[0], slots:list.filter(s=>s.h<12)},
-    {key:'a', label:L.afternoon,  bay:BAY_NAMES[1], slots:list.filter(s=>s.h>=12&&s.h<17)},
-    {key:'e', label:L.evening,    bay:BAY_NAMES[2], slots:list.filter(s=>s.h>=17)},
+    {key:'m', label:L.morning,   bay:BAY_NAMES[0], slots:list.filter(s=>s.h<12)},
+    {key:'a', label:L.afternoon, bay:BAY_NAMES[1], slots:list.filter(s=>s.h>=12&&s.h<17)},
+    {key:'e', label:L.evening,   bay:BAY_NAMES[2], slots:list.filter(s=>s.h>=17)},
   ];
 
   groups.forEach(grp=>{
     if(!grp.slots.length) return;
-    const gEl=document.createElement('div'); gEl.className='slot-group';
-    const hd=document.createElement('div'); hd.className='slot-group-hd'; hd.textContent=grp.label;
+    const gEl  = document.createElement('div'); gEl.className='slot-group';
+    const hd   = document.createElement('div'); hd.className='slot-group-hd'; hd.textContent=grp.label;
     gEl.appendChild(hd);
-    const grid=document.createElement('div'); grid.className='slot-grid';
-
-    const allFull = ST.forceFullDemo || grp.slots.every(s=>s.left===0);
+    const grid = document.createElement('div'); grid.className='slot-grid';
 
     grp.slots.forEach(slot=>{
-      const isFull=ST.forceFullDemo||slot.left===0, isFew=!ST.forceFullDemo&&slot.left>0&&slot.left<=2;
-      const isSel=ST.selectedSlot&&!ST.selectedSlot.isDispatch&&ST.selectedSlot.h===slot.h&&ST.selectedSlot.m===slot.m;
-      let cls='slot-card'+(isFull?' full':'')+(isSel?' sel':'')+(slot.isWC?' wc-slot':'');
-      let badgeCls='b-ok', badgeTxt=`${slot.left} ${slot.left===1?'seat':'seats'} left`;
-      if(isFull){badgeCls='b-full';badgeTxt=L.legFull;}
-      else if(isFew){badgeCls='b-few';}
-      const card=document.createElement('div'); card.className=cls;
-      card.innerHTML=`
+      /* When forceFullDemo is on, treat every slot as having 0 left */
+      const effectiveLeft = ST.forceFullDemo ? 0 : slot.left;
+      const isFull = effectiveLeft === 0;
+      const isFew  = !isFull && effectiveLeft <= 2;
+
+      /* Is this slot selected normally? */
+      const isSelNormal = ST.selectedSlot && !ST.selectedSlot.isDispatch
+        && ST.selectedSlot.h === slot.h && ST.selectedSlot.m === slot.m;
+
+      /* Is the dispatch version of this slot selected? */
+      const isSelDispatch = ST.selectedSlot && ST.selectedSlot.isDispatch
+        && ST.selectedSlot.h === slot.h && ST.selectedSlot.m === slot.m;
+
+      /* Dispatch ETA unique to this specific slot */
+      const dispEta = Math.floor(sRand(ST.dateSeed*99 + slot.h*60 + slot.m)*10+10);
+
+      let badgeCls = 'b-ok';
+      let badgeTxt = `${effectiveLeft} ${effectiveLeft===1?'seat':'seats'} left`;
+      if(isFull)     { badgeCls='b-full'; badgeTxt=L.legFull; }
+      else if(isFew) { badgeCls='b-few'; }
+
+      /* ── Normal slot card ── */
+      const card = document.createElement('div');
+      card.className = 'slot-card'
+        + (isFull && !isSelDispatch ? ' full-nodim' : '')
+        + (isSelNormal ? ' sel' : '')
+        + (slot.isWC ? ' wc-slot' : '');
+
+      card.innerHTML = `
         <div class="slot-time-big">${fmtTime(slot.h,slot.m)}</div>
         <div class="slot-veh${slot.isWC?' wc':''}">${slot.isWC?'♿':'🚗'} ${slot.isWC?L.wcAV:L.stdAV}</div>
-        <div class="dots-row">${dotHtml(slot.left,slot.maxPax)}</div>
-        <div class="slot-cap">${slot.left} / ${slot.maxPax} ${L.legAvail.toLowerCase()}</div>
+        <div class="dots-row">${dotHtml(effectiveLeft,slot.maxPax)}</div>
+        <div class="slot-cap">${effectiveLeft} / ${slot.maxPax} ${L.legAvail.toLowerCase()}</div>
         <div class="slot-badge ${badgeCls}">${badgeTxt}</div>
-        <div class="slot-veh-id">${slot.vehId}</div>`;
-      if(!isFull) card.addEventListener('click',()=>{ ST.selectedSlot=slot; $('errSlot').classList.remove('on'); renderSlots(); });
+        <div class="slot-veh-id">${slot.vehId}</div>
+        ${isFull ? `
+        <div class="dispatch-inline${isSelDispatch?' dispatch-inline-sel':''}">
+          <div class="dispatch-inline-top">
+            <span style="font-size:18px">🚐</span>
+            <span class="dispatch-inline-lbl">${L.dispatchTitle}</span>
+          </div>
+          <div class="dispatch-inline-meta">${grp.bay} &nbsp;•&nbsp; ${L.dispatchEtaLbl} ~${dispEta} mins</div>
+          <div class="dispatch-inline-dots">${dotHtml(5,5).replace(/fr/g,'fresh')}</div>
+        </div>` : ''}
+      `;
+
+      /* Click normal slot */
+      if(!isFull){
+        card.addEventListener('click', ()=>{
+          ST.selectedSlot = slot;
+          $('errSlot').classList.remove('on');
+          renderSlots();
+        });
+      } else {
+        /* Click on dispatch section of a full slot card */
+        const dispSection = card.querySelector('.dispatch-inline');
+        if(dispSection){
+          dispSection.addEventListener('click', e=>{
+            e.stopPropagation();
+            ST.selectedSlot = {
+              ...slot,
+              isDispatch:true, bay:grp.bay,
+              dispatchEta:dispEta, left:5, maxPax:5,
+            };
+            $('errSlot').classList.remove('on');
+            renderSlots();
+          });
+        }
+      }
+
       grid.appendChild(card);
     });
 
-    /* Dispatch card when all slots in group are full */
-    if(allFull){
-      const dispEta = Math.floor(sRand(ST.dateSeed*99+grp.key.charCodeAt(0))*10+15);
-      const isSel   = ST.selectedSlot&&ST.selectedSlot.isDispatch&&ST.selectedSlot.groupKey===grp.key;
-      const dc=document.createElement('div');
-      dc.className='slot-card dispatch'+(isSel?' sel':'');
-      dc.innerHTML=`
-        <div class="slot-time-big" style="color:#A86800">🚐 ${L.dispatchTitle}</div>
-        <div class="slot-veh disp">🏢 ${L.dispatchFrom} ${grp.bay}</div>
-        <div class="dots-row">${dotHtml(5,5).replace(/fr/g,'fresh')}</div>
-        <div class="slot-cap">5 / 5 ${L.legAvail.toLowerCase()}</div>
-        <div class="slot-badge b-disp">On Demand</div>
-        <div class="dispatch-eta">${L.dispatchEtaLbl} ~${dispEta} mins</div>`;
-      dc.addEventListener('click',()=>{
-        ST.selectedSlot={isDispatch:true,groupKey:grp.key,dispatchEta:dispEta,bay:grp.bay,left:5,maxPax:5,isWC:ST.wc,vehId:'CR-DISPATCH'};
-        $('errSlot').classList.remove('on');
-        renderSlots();
-      });
-      grid.appendChild(dc);
-    }
-
     gEl.appendChild(grid); wrap.appendChild(gEl);
   });
-  if(!wrap.children.length) wrap.innerHTML=`<div class="no-slots-msg">${L.legFull}</div>`;
+
+  if(!wrap.children.length)
+    wrap.innerHTML=`<div class="no-slots-msg">${L.legFull}</div>`;
 }
 
 /* ============================================================
